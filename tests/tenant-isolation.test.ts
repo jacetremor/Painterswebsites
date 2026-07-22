@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { TENANTS } from "@/lib/content/seeds";
 import { allTenantPages } from "@/lib/content/pages";
-import { normalizeHostname, resolveSeedTenant } from "@/lib/tenant/host";
+import { normalizeHostname, previewSlugFromHostname, resolveSeedTenant, shouldNoIndexHostname } from "@/lib/tenant/host";
 
 describe("tenant isolation", () => {
   it("resolves each hostname to exactly one tenant", () => {
@@ -9,6 +9,13 @@ describe("tenant isolation", () => {
     expect(resolveSeedTenant("heritage.localhost:3000")?.id).toBe("heritage");
     expect(resolveSeedTenant("unknown.localhost")).toBeNull();
     expect(normalizeHostname("www.summitpainting.com:443")).toBe("summitpainting.com");
+  });
+
+  it("recognizes only valid Nova Suite tenant preview subdomains", () => {
+    expect(previewSlugFromHostname("northstarpainting.novasuite.io")).toBe("northstarpainting");
+    expect(previewSlugFromHostname("app.novasuite.io")).toBeNull();
+    expect(previewSlugFromHostname("northstarpainting.example.com")).toBeNull();
+    expect(shouldNoIndexHostname("northstarpainting.novasuite.io")).toBe(true);
   });
 
   it("contains the complete and separate Phase One inventory", () => {

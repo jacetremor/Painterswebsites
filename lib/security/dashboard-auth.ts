@@ -33,3 +33,14 @@ export async function requireDashboardAccess(tenant: Tenant): Promise<DashboardA
     readOnly: false,
   };
 }
+
+export async function requirePlatformAdmin(): Promise<DashboardAccess> {
+  if (!hasSupabaseConfig()) {
+    return { userId: "demo", email: "demo@local.invalid", role: "demo_readonly", readOnly: true };
+  }
+  const supabase = await createSupabaseServerClient();
+  const { data: { user } } = await supabase!.auth.getUser();
+  if (!user) redirect("/login");
+  if (user.app_metadata?.role !== "platform_admin") redirect("/unauthorized");
+  return { userId: user.id, email: user.email ?? "Authenticated user", role: "platform_admin", readOnly: false };
+}

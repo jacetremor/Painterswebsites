@@ -1,5 +1,22 @@
 # New Tenant Onboarding
 
+For new paid clients, start at `/dashboard/onboarding`. Payment, pricing, checkout, billing, invoicing, and subscription logic remain outside this system.
+
+1. Create a secure invitation with client/company identity, a unique lowercase preview slug, notes, and expiration.
+2. Send the one-time URL to the client. Replacement links rotate the token and invalidate the old URL.
+3. Let the client complete all 17 sections; progress is saved in section-scoped server records and uploads stay private.
+4. Review/edit every answer, request changes when needed, and explicitly approve the submission.
+5. Start the durable generation job. It creates one tenant in this shared platform; it never creates a repository or Vercel project.
+6. Approve legitimate location candidates after the geography-provider step. Cross-state candidates require both confirmed coverage and Nova Suite approval.
+7. Retry the blocked step. Review factual warnings and approve each latest generated content version.
+8. Review the private `clientname.novasuite.io` website. The preview is permanently noindex and never canonical.
+9. Collect the client's preview approval or change request through their secure invitation.
+10. Connect the custom domain manually while preserving mail and verification records. Record DNS, Vercel, SSL, redirect, canonical, and primary-domain checks.
+11. Record final Nova Suite approval for launch. This does not publish the website.
+12. Use the separate explicit launch action only after every production gate passes. The preview remains noindex.
+
+The lower-level tenant checklist still applies to manually managed or migrated records:
+
 1. Create the tenant row and a unique lowercase slug.
 2. Add development, root, and `www` domain rows; verify exactly one primary production domain.
 3. Invite the tenant administrator and test their membership before adding editors.

@@ -1,0 +1,11 @@
+"use client";
+
+import { useState } from "react";
+import { Check, ExternalLink, LoaderCircle, MessageSquare } from "lucide-react";
+
+export function ClientPreviewReview({ token, companyName, previewSlug }: { token: string; companyName: string; previewSlug: string }) {
+  const [notes, setNotes] = useState(""); const [busy, setBusy] = useState<"approved" | "changes_requested" | null>(null); const [message, setMessage] = useState("");
+  async function submit(status: "approved" | "changes_requested") { if (status === "changes_requested" && notes.trim().length < 5) { setMessage("Describe the requested changes first."); return; } setBusy(status); const response = await fetch(`/api/onboarding/${encodeURIComponent(token)}/review`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status, notes }) }); const body = await response.json() as { message?: string }; setBusy(null); setMessage(body.message ?? (response.ok ? "Review saved." : "Review could not be saved.")); }
+  return <section className="client-review"><div><p className="eyebrow">Private website review</p><h1>{companyName} is ready for review.</h1><p>The preview is permanently noindex and is not the live production website. Nova Suite approval is still required before launch.</p><a className="button" href={`https://${previewSlug}.novasuite.io`} target="_blank" rel="noreferrer">Open website preview <ExternalLink size={18}/></a></div><div><label htmlFor="review-notes">Review notes or requested changes</label><textarea id="review-notes" value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="Reference the page, heading, image, service, location, or business fact."/><div><button className="button button--ghost" type="button" disabled={busy !== null} onClick={() => void submit("changes_requested")}>{busy === "changes_requested" ? <LoaderCircle className="spin" size={17}/> : <MessageSquare size={17}/>} Request changes</button><button className="button" type="button" disabled={busy !== null} onClick={() => void submit("approved")}>{busy === "approved" ? <LoaderCircle className="spin" size={17}/> : <Check size={17}/>} Approve preview</button></div>{message && <p role="status">{message}</p>}</div></section>;
+}
+

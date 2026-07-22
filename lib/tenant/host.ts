@@ -1,7 +1,7 @@
 import { TENANTS } from "@/lib/content/seeds";
 import type { Tenant } from "@/lib/types";
 
-const PREVIEW_HOST_SUFFIXES = [".vercel.app", ".localhost", ".local"];
+const PREVIEW_HOST_SUFFIXES = [".vercel.app", ".novasuite.io", ".localhost", ".local"];
 
 export function normalizeHostname(rawHost: string | null | undefined): string {
   if (!rawHost) return "summit.localhost";
@@ -19,6 +19,14 @@ export function isPreviewHostname(hostname: string): boolean {
 
 export function shouldNoIndexHostname(hostname: string): boolean {
   return isPreviewHostname(hostname) && process.env.LHCI_ALLOW_INDEXING !== "true";
+}
+
+export function previewSlugFromHostname(hostname: string): string | null {
+  const normalized = normalizeHostname(hostname);
+  if (!normalized.endsWith(".novasuite.io")) return null;
+  const slug = normalized.slice(0, -".novasuite.io".length);
+  if (!slug || ["app", "www"].includes(slug) || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return null;
+  return slug;
 }
 
 export function resolveSeedTenant(rawHost: string | null | undefined): Tenant | null {
