@@ -5,12 +5,13 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { CallToAction } from "@/components/call-to-action";
 import { ContactForm } from "@/components/contact-form";
 import { JsonLd } from "@/components/json-ld";
+import { SplitText } from "@/components/motion/split-text";
 import { ProjectCard } from "@/components/project-card";
 import { pageSchema } from "@/lib/seo/structured-data";
 import type { ContentPage, Location, Service, Tenant } from "@/lib/types";
 
 function PageHero({ tenant, page }: { tenant: Tenant; page: ContentPage }) {
-  return <header className="page-hero"><Image src={tenant.heroImage.src} alt="" fill priority sizes="100vw" /><div className="container page-hero__content"><Breadcrumbs current={page.breadcrumbLabel} /><p className="eyebrow">{page.intent}</p><h1>{page.seo.h1}</h1><p className="lede">{page.intro}</p></div></header>;
+  return <header className="page-hero"><Image src={tenant.heroImage.src} alt="" fill priority sizes="100vw" /><div className="container page-hero__content"><Breadcrumbs current={page.breadcrumbLabel} /><p className="eyebrow">{page.intent}</p><SplitText text={page.seo.h1} tag="h1" delay={tenant.theme === "summit" ? 0.045 : 0.07} /><p className="lede">{page.intro}</p></div></header>;
 }
 
 function Faq({ items }: { items: Array<{ question: string; answer: string }> }) {

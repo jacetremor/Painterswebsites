@@ -4,6 +4,9 @@ import { ArrowRight, Brush, Check, ClipboardCheck, Phone, ShieldCheck } from "lu
 import { BeforeAfter } from "@/components/before-after";
 import { ContactForm } from "@/components/contact-form";
 import { JsonLd } from "@/components/json-ld";
+import { PaintMarquee } from "@/components/motion/paint-marquee";
+import { SplitText } from "@/components/motion/split-text";
+import { SpotlightCard } from "@/components/motion/spotlight-card";
 import { ProjectCard } from "@/components/project-card";
 import { pageSchema } from "@/lib/seo/structured-data";
 import type { ContentPage, Tenant } from "@/lib/types";
@@ -21,7 +24,7 @@ export function HomePage({ tenant, page }: { tenant: Tenant; page: ContentPage }
         <Image src={tenant.heroImage.src} alt={tenant.heroImage.alt} fill loading="eager" fetchPriority="high" sizes="100vw" />
         <div className="container hero__content">
           <p className="eyebrow">Painting {region} with purpose</p>
-          <h1>{page.seo.h1}</h1>
+          <SplitText text={page.seo.h1} tag="h1" delay={tenant.theme === "summit" ? 0.05 : 0.075} duration={tenant.theme === "summit" ? 1 : 1.2} />
           <p className="hero__lede">{page.intro}</p>
           <div className="button-row">
             <Link className="button button--accent" href="/contact">Request an estimate <ArrowRight size={18} aria-hidden="true" /></Link>
@@ -42,11 +45,13 @@ export function HomePage({ tenant, page }: { tenant: Tenant; page: ContentPage }
         </div>
       </section>
 
+      <PaintMarquee warm={tenant.theme === "heritage"} />
+
       <section className="section band services-band" id="services">
         <div className="container">
           <div className="section-heading"><div><p className="eyebrow">Painting services</p><h2>Preparation and finishes matched to the job.</h2></div><p>From occupied interiors to weather-exposed exteriors, each scope starts with the material, condition, and way the space is used.</p></div>
           <div className="service-feature-grid">
-            {tenant.services.slice(0, 3).map((service, index) => <article className="service-feature" key={service.id}><span className="service-number">0{index + 1}</span><p className="eyebrow">{service.category}</p><h3>{service.name}</h3><p>{service.intro}</p><Link className="text-link" href={`/${service.slug}`}>Explore the service <ArrowRight size={16} aria-hidden="true" /></Link></article>)}
+            {tenant.services.slice(0, 3).map((service, index) => <SpotlightCard className="service-feature" spotlightColor={tenant.theme === "summit" ? "rgba(225, 93, 63, 0.18)" : "rgba(231, 169, 47, 0.2)"} key={service.id}><span className="service-number">0{index + 1}</span><p className="eyebrow">{service.category}</p><h3>{service.name}</h3><p>{service.intro}</p><Link className="text-link" href={`/${service.slug}`}>Explore the service <ArrowRight size={16} aria-hidden="true" /></Link></SpotlightCard>)}
           </div>
           <div className="service-directory">{tenant.services.slice(3).map((service) => <Link key={service.id} href={`/${service.slug}`}><span>{service.name}</span><ArrowRight size={16} aria-hidden="true" /></Link>)}</div>
         </div>

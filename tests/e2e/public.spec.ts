@@ -7,8 +7,20 @@ test("renders one H1 and crawlable tenant navigation", async ({ page }) => {
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
 });
 
+test("loads the public motion system without hiding content", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("body")).toHaveClass(/motion-enabled/);
+  await expect(page.locator(".scroll-progress__bar")).toHaveCount(1);
+  await expect(page.locator(".split-text")).toHaveCount(1);
+  await expect(page.locator(".paint-marquee")).toHaveCount(1);
+  const introduction = page.locator(".home-intro .motion-reveal");
+  await introduction.scrollIntoViewIfNeeded();
+  await expect(introduction).toHaveClass(/is-visible/);
+});
+
 test("navigates tenant pages without a reload loop", async ({ page }) => {
   await page.goto("/");
+  await expect(page.locator("body")).toHaveClass(/motion-enabled/);
   const aboutLink = page.locator('.home-intro a[href="/about"]');
   await expect(aboutLink).toHaveCount(1);
   await aboutLink.click();

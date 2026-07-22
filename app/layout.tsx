@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getCurrentTenant } from "@/lib/content/repository";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { PublicMotion } from "@/components/motion/public-motion";
 import "@fontsource-variable/manrope";
 import "@fontsource-variable/newsreader";
 import "./globals.css";
@@ -45,6 +46,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     <html lang="en" style={style} data-scroll-behavior="smooth">
       <body data-theme={tenant.theme}>
         <a className="skip-link" href="#main-content">Skip to main content</a>
+        <PublicMotion />
         <SiteHeader tenant={tenant} />
         <main id="main-content">{children}</main>
         <SiteFooter tenant={tenant} />
