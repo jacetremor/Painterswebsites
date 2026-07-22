@@ -1,0 +1,27 @@
+{
+  "tenantId": "heritage",
+  "tenantName": "Heritage Paint & Finish",
+  "productionReady": false,
+  "checkedAt": null,
+  "checks": {
+    "primaryDomainVerified": false,
+    "httpsAndHostRedirectPass": false,
+    "canonicalIsolationPass": false,
+    "noDevelopmentUrlsPass": false,
+    "robotsAndSitemapPass": false,
+    "draftAndAdminNoindexPass": false,
+    "uniqueMetadataAndH1Pass": false,
+    "internalLinksAndRedirectsPass": false,
+    "structuredDataPass": false,
+    "locationQualityPass": false,
+    "serviceQualityPass": false,
+    "imageRightsOptimizationAndAltPass": false,
+    "mobileAccessibilityAndLighthousePass": false,
+    "contactDeliveryPass": false,
+    "analyticsIsolationPass": false,
+    "searchConsoleReady": false,
+    "allPlaceholdersAndInventedClaimsRemoved": false,
+    "credentialedTenantIsolationTestsPass": false
+  },
+  "evidence": {}
+}

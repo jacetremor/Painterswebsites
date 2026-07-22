@@ -1,0 +1,98 @@
+export const SERVICE_CATALOG = [
+  {
+    name: "Cabinet Painting and Refinishing",
+    slug: "cabinet-painting-refinishing",
+    category: "interior" as const,
+    useCases: ["Kitchen cabinet updates", "Built-in shelving", "Bathroom vanities"],
+    materials: ["Bonding primer", "Cabinet-grade enamel", "Low-VOC cleaners"],
+  },
+  {
+    name: "Epoxy Flooring",
+    slug: "epoxy-flooring",
+    category: "interior" as const,
+    useCases: ["Garages", "Workshops", "Light commercial floors"],
+    materials: ["Concrete degreaser", "Two-part epoxy", "Slip-resistant aggregate"],
+  },
+  {
+    name: "Interior Painting",
+    slug: "interior-painting",
+    category: "interior" as const,
+    useCases: ["Occupied homes", "Move-in refreshes", "Offices and retail rooms"],
+    materials: ["Low-VOC wall paint", "Stain-blocking primer", "Durable trim enamel"],
+  },
+  {
+    name: "Wallpaper Removal",
+    slug: "wallpaper-removal",
+    category: "interior" as const,
+    useCases: ["Dated wallcoverings", "Damaged seams", "Paint-ready wall restoration"],
+    materials: ["Low-moisture removal solution", "Skim-coat compound", "Problem-surface primer"],
+  },
+  {
+    name: "Brick Painting and Staining",
+    slug: "brick-painting-staining",
+    category: "exterior" as const,
+    useCases: ["Masonry color updates", "Fireplace surrounds", "Exterior brick facades"],
+    materials: ["Masonry cleaner", "Breathable mineral stain", "Masonry coating"],
+  },
+  {
+    name: "Concrete Staining",
+    slug: "concrete-staining",
+    category: "exterior" as const,
+    useCases: ["Patios", "Walkways", "Covered concrete floors"],
+    materials: ["Concrete cleaner", "Penetrating stain", "UV-stable sealer"],
+  },
+  {
+    name: "Deck Painting and Staining",
+    slug: "deck-painting-staining",
+    category: "exterior" as const,
+    useCases: ["Weathered decks", "Porches", "Exterior stairs and rails"],
+    materials: ["Wood brightener", "Penetrating deck stain", "Exterior porch coating"],
+  },
+  {
+    name: "Exterior Painting",
+    slug: "exterior-painting",
+    category: "exterior" as const,
+    useCases: ["Whole-home repaints", "Trim and fascia", "Commercial exteriors"],
+    materials: ["Exterior bonding primer", "Weather-resistant acrylic", "Elastomeric sealant"],
+  },
+  {
+    name: "Fence Painting and Staining",
+    slug: "fence-painting-staining",
+    category: "exterior" as const,
+    useCases: ["Privacy fences", "Decorative wood fencing", "Gates and posts"],
+    materials: ["Wood cleaner", "Penetrating stain", "Exterior enamel"],
+  },
+  {
+    name: "Home Siding Painting",
+    slug: "home-siding-painting",
+    category: "exterior" as const,
+    useCases: ["Fiber-cement siding", "Wood siding", "Paintable metal siding"],
+    materials: ["Siding-safe cleaner", "Adhesion primer", "Premium exterior acrylic"],
+  },
+  {
+    name: "Stucco Painting",
+    slug: "stucco-painting",
+    category: "exterior" as const,
+    useCases: ["Faded stucco", "Hairline crack repair", "Color modernization"],
+    materials: ["Masonry conditioner", "Elastomeric patch", "Breathable acrylic coating"],
+  },
+] as const;
+
+export const PROJECT_PHOTOS = {
+  summit: [
+    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=82",
+    "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=82",
+    "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1600&q=82",
+    "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1600&q=82",
+    "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?auto=format&fit=crop&w=1600&q=82",
+    "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1600&q=82",
+  ],
+  heritage: [
+    "https://images.unsplash.com/photo-1562259949-e8e7689d7828?auto=format&fit=crop&w=1600&q=82",
+    "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&w=1600&q=82",
+    "https://images.unsplash.com/photo-1560439514-4e9645039924?auto=format&fit=crop&w=1600&q=82",
+    "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=1600&q=82",
+    "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1600&q=82",
+    "https://images.unsplash.com/photo-1615874694520-474822394e73?auto=format&fit=crop&w=1600&q=82",
+  ],
+} as const;
