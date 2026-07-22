@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Phone } from "lucide-react";
+import { ArrowRight, Brush, Check, ClipboardCheck, Phone, ShieldCheck } from "lucide-react";
 import { BeforeAfter } from "@/components/before-after";
 import { ContactForm } from "@/components/contact-form";
 import { JsonLd } from "@/components/json-ld";
@@ -12,67 +12,74 @@ export function HomePage({ tenant, page }: { tenant: Tenant; page: ContentPage }
   const featuredProject = tenant.projects[0]!;
   const before = featuredProject.images.find((image) => image.stage === "before")!;
   const after = featuredProject.images.find((image) => image.stage === "after")!;
+  const region = tenant.theme === "summit" ? "Salt Lake City" : "Denver";
+
   return (
     <>
       <JsonLd data={pageSchema(tenant, page)} />
       <section className="hero">
         <Image src={tenant.heroImage.src} alt={tenant.heroImage.alt} fill loading="eager" fetchPriority="high" sizes="100vw" />
         <div className="container hero__content">
-          <p className="eyebrow">Serving {tenant.serviceArea}</p>
+          <p className="eyebrow">Painting {region} with purpose</p>
           <h1>{page.seo.h1}</h1>
-          <p>{page.intro}</p>
+          <p className="hero__lede">{page.intro}</p>
           <div className="button-row">
-            <Link className="button button--accent" href="/contact">{tenant.primaryCta}<ArrowRight size={18} aria-hidden="true" /></Link>
-            <a className="button button--ghost" href={`tel:${tenant.phone.replace(/\D/g, "")}`}><Phone size={18} aria-hidden="true" />Call {tenant.phone}</a>
+            <Link className="button button--accent" href="/contact">Request an estimate <ArrowRight size={18} aria-hidden="true" /></Link>
+            <a className="button button--ghost" href={`tel:${tenant.phone.replace(/\D/g, "")}`}><Phone size={18} aria-hidden="true" />{tenant.phone}</a>
           </div>
         </div>
-      </section>
-
-      <div className="stat-row" aria-label="Service commitments">
-        <div className="stat"><strong>11</strong><span>documented service scopes</span></div>
-        <div className="stat"><strong>20</strong><span>local service-area guides</span></div>
-        <div className="stat"><strong>1 plan</strong><span>from preparation to walkthrough</span></div>
-      </div>
-
-      <section className="section">
-        <div className="container grid-2">
-          <div><p className="eyebrow">Residential painting</p><h2>Finish choices made for real life</h2><p className="lede">Interior rooms, exteriors, cabinets, decks, fences, brick, siding, and stucco each need their own preparation and product logic.</p><Link className="button button--ghost" href="/residential-painting">Explore residential painting<ArrowRight size={18} aria-hidden="true" /></Link></div>
-          <div><p className="eyebrow">Commercial painting</p><h2>Scheduling that respects operations</h2><p className="lede">Plan access, occupied spaces, low-odor needs, drying time, and turnover milestones before work reaches the calendar.</p><Link className="button button--ghost" href="/commercial-painting">Explore commercial painting<ArrowRight size={18} aria-hidden="true" /></Link></div>
+        <div className="container hero__trust" aria-label="Project commitments">
+          <span><ShieldCheck size={18} aria-hidden="true" /> Protected spaces</span>
+          <span><Brush size={18} aria-hidden="true" /> Surface-specific prep</span>
+          <span><ClipboardCheck size={18} aria-hidden="true" /> Written project plan</span>
         </div>
       </section>
 
-      <section className="section band" id="services">
+      <section className="section home-intro">
+        <div className="container intro-grid">
+          <div><p className="eyebrow">Built around the surface</p><h2>{tenant.theme === "summit" ? "A sharper standard for every room and elevation." : "A calmer way to bring new color home."}</h2></div>
+          <div className="prose intro-copy">{page.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}<Link className="text-link" href="/about">See how we approach the work <ArrowRight size={17} aria-hidden="true" /></Link></div>
+        </div>
+      </section>
+
+      <section className="section band services-band" id="services">
         <div className="container">
-          <p className="eyebrow">Featured services</p><h2>A scope for the surface, not a generic package</h2>
-          <div className="grid-3">
-            {tenant.services.slice(0, 6).map((service) => <article className="card" key={service.id}><Link className="card-link card__body" href={`/${service.slug}`}><span className="pill">{service.category}</span><h3>{service.name}</h3><p>{service.intro}</p><strong>See the process</strong></Link></article>)}
+          <div className="section-heading"><div><p className="eyebrow">Painting services</p><h2>Preparation and finishes matched to the job.</h2></div><p>From occupied interiors to weather-exposed exteriors, each scope starts with the material, condition, and way the space is used.</p></div>
+          <div className="service-feature-grid">
+            {tenant.services.slice(0, 3).map((service, index) => <article className="service-feature" key={service.id}><span className="service-number">0{index + 1}</span><p className="eyebrow">{service.category}</p><h3>{service.name}</h3><p>{service.intro}</p><Link className="text-link" href={`/${service.slug}`}>Explore the service <ArrowRight size={16} aria-hidden="true" /></Link></article>)}
           </div>
+          <div className="service-directory">{tenant.services.slice(3).map((service) => <Link key={service.id} href={`/${service.slug}`}><span>{service.name}</span><ArrowRight size={16} aria-hidden="true" /></Link>)}</div>
         </div>
       </section>
 
-      <section className="section">
+      <section className="section project-feature">
+        <div className="container feature-grid">
+          <div className="feature-media"><BeforeAfter before={before} after={after} title={featuredProject.name} /></div>
+          <div className="feature-copy"><p className="eyebrow">Project approach</p><h2>A beautiful finish starts well before the first coat.</h2><p className="lede">{featuredProject.intro}</p><ol className="clean-process"><li><span>01</span><div><strong>Walk and document</strong><p>Review surfaces, repairs, access, protection, and the desired finish.</p></div></li><li><span>02</span><div><strong>Prepare with intention</strong><p>Build the coating system around the substrate and real site conditions.</p></div></li><li><span>03</span><div><strong>Inspect the details</strong><p>Check coverage, edges, cleanup, and closeout together.</p></div></li></ol><Link className="button" href="/gallery">View project gallery <ArrowRight size={18} aria-hidden="true" /></Link></div>
+        </div>
+      </section>
+
+      <section className="section locations-band" id="locations">
+        <div className="container location-grid">
+          <div className="location-intro"><p className="eyebrow">Local service area</p><h2>{region} painting guidance, neighborhood by neighborhood.</h2><p>Local building styles, elevation, sun, weather, and access all shape a responsible painting plan.</p><Link className="button button--ghost" href={`/${tenant.locations[0]!.slug}`}>Explore {region} services</Link></div>
+          <nav className="location-directory" aria-label="Featured service locations">{tenant.locations.slice(0, 10).map((location) => <Link key={location.id} href={`/${location.slug}`}><span>{location.city}</span><small>{location.stateAbbr}</small><ArrowRight size={17} aria-hidden="true" /></Link>)}</nav>
+        </div>
+      </section>
+
+      <section className="section projects-band">
+        <div className="container"><div className="section-heading"><div><p className="eyebrow">Selected work</p><h2>Look beyond the color.</h2></div><p>Useful project records explain the surface, preparation, finish choices, and constraints behind the photograph.</p></div><div className="grid-3 project-grid">{tenant.projects.slice(0, 3).map((project) => <ProjectCard key={project.id} project={project} />)}</div></div>
+      </section>
+
+      <section className="section planning-band">
         <div className="container grid-2">
-          <div><p className="eyebrow">Before and after</p><h2>Project evidence needs context</h2><p>{featuredProject.intro}</p><BeforeAfter before={before} after={after} title={featuredProject.name} /></div>
-          <div><p className="eyebrow">Company introduction</p><h2>{tenant.theme === "summit" ? "Preparation is part of the finish" : "Clear guidance makes color easier"}</h2>{page.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}<ul className="link-list"><li><CheckCircle2 size={18} aria-hidden="true" /> Surface-specific preparation</li><li><CheckCircle2 size={18} aria-hidden="true" /> Written scope and sequence</li><li><CheckCircle2 size={18} aria-hidden="true" /> Accessible final walkthrough</li></ul><div className="button-row"><Link className="button" href="/about">How the process works</Link><Link className="button button--ghost" href="/gallery">Browse project records</Link></div></div>
+          <div><p className="eyebrow">A straightforward process</p><h2>Know what happens next.</h2><ul className="expectation-list"><li><Check size={18} aria-hidden="true" /><span><strong>Clear scope</strong> Surface condition, repairs, products, protection, and sequence.</span></li><li><Check size={18} aria-hidden="true" /><span><strong>Thoughtful scheduling</strong> Access, weather, drying time, pets, and occupied rooms.</span></li><li><Check size={18} aria-hidden="true" /><span><strong>Documented walkthrough</strong> Finish review, touch-ups, cleanup, and care notes.</span></li></ul></div>
+          <div><p className="eyebrow">Common questions</p><div className="faq"><details><summary>How far ahead should I request an estimate?</summary><p>Share your preferred timing early. Availability depends on scope, weather, product requirements, and current scheduling.</p></details><details><summary>Do I need to choose colors first?</summary><p>No. Color and sheen can be confirmed after scope, but selections and samples should be approved before materials are ordered.</p></details><details><summary>What makes an estimate accurate?</summary><p>Surface condition, repairs, access, protection, product system, number of colors, and sequencing all matter more than square footage alone.</p></details></div></div>
         </div>
       </section>
 
-      <section className="section band" id="locations">
-        <div className="container"><p className="eyebrow">Featured locations</p><h2>Painting guidance grounded in place</h2><div className="grid-4">{tenant.locations.slice(0, 8).map((location) => <article className="card" key={location.id}><Link className="card-link card__body" href={`/${location.slug}`}><h3>{location.city}</h3><p>{location.localDetail}</p><strong>Painting in {location.city}</strong></Link></article>)}</div></div>
+      <section className="section estimate-section" id="estimate">
+        <div className="container estimate-grid"><div><p className="eyebrow">Request an estimate</p><h2>Tell us what you want to change.</h2><p className="lede">Share the space, surface, timing, and any concerns. We’ll use those details to shape a useful first conversation.</p><div className="estimate-contact"><a href={`tel:${tenant.phone.replace(/\D/g, "")}`}>{tenant.phone}</a><span>{tenant.businessHours}</span><span>{tenant.serviceArea}</span></div></div><ContactForm serviceArea={tenant.serviceArea} /></div>
       </section>
-
-      <section className="section">
-        <div className="container"><p className="eyebrow">Featured projects</p><h2>See the scope behind the image</h2><div className="grid-3">{tenant.projects.slice(0, 3).map((project) => <ProjectCard key={project.id} project={project} />)}</div></div>
-      </section>
-
-      <section className="section band">
-        <div className="container grid-2">
-          <div><p className="eyebrow">Customer evidence</p><h2>Testimonials need a real source</h2><p className="lede">The platform can publish testimonials with source links, but this demonstration does not invent them.</p>{tenant.testimonials.slice(0, 2).map((item) => <blockquote key={item.id}><p>“{item.quote}”</p><footer>{item.customerName}, {item.city}</footer></blockquote>)}</div>
-          <div><p className="eyebrow">Questions</p><h2>Start with the practical details</h2><div className="faq"><details><summary>How far ahead should I request an estimate?</summary><p>Share your preferred timing early. Availability depends on scope, weather, product requirements, and current scheduling.</p></details><details><summary>Do I need to choose colors first?</summary><p>No. Color and sheen can be confirmed after scope, but selections and samples should be approved before materials are ordered.</p></details><details><summary>What makes an estimate accurate?</summary><p>Surface condition, repairs, access, protection, product system, number of colors, and sequencing all matter more than square footage alone.</p></details></div></div>
-        </div>
-      </section>
-
-      <section className="section" id="estimate"><div className="container grid-2"><div><p className="eyebrow">Request an estimate</p><h2>Tell us what the space needs</h2><p className="lede">Your notes go only to {tenant.name}. Include photos later through the secure follow-up process.</p><p><strong>{tenant.phone}</strong><br />{tenant.email}<br />{tenant.businessHours}</p><p><Link href="/contact">View complete contact information</Link></p></div><ContactForm serviceArea={tenant.serviceArea} /></div></section>
     </>
   );
 }

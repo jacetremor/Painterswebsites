@@ -4,6 +4,8 @@ import Link from "next/link";
 import { getCurrentTenant } from "@/lib/content/repository";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import "@fontsource-variable/manrope";
+import "@fontsource-variable/newsreader";
 import "./globals.css";
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
@@ -18,7 +20,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       "--body-font": "Inter, ui-sans-serif, system-ui, sans-serif",
     } as CSSProperties;
     return (
-      <html lang="en" style={platformStyle}>
+      <html lang="en" style={platformStyle} data-scroll-behavior="smooth">
         <body data-theme="platform">
           <a className="skip-link" href="#main-content">Skip to main content</a>
           <header className="platform-header"><Link className="platform-brand" href="/dashboard/onboarding"><span aria-hidden="true">NS</span> Nova Suite</Link></header>
@@ -35,12 +37,12 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     "--surface": tenant.branding.surface,
     "--ink": tenant.branding.ink,
     "--radius": tenant.branding.radius,
-    "--heading-font": tenant.theme === "summit" ? '"Arial Narrow", "Roboto Condensed", sans-serif' : 'Georgia, "Times New Roman", serif',
-    "--body-font": tenant.theme === "summit" ? 'Inter, ui-sans-serif, system-ui, sans-serif' : 'Aptos, ui-sans-serif, system-ui, sans-serif',
+    "--heading-font": tenant.theme === "summit" ? '"Manrope Variable", ui-sans-serif, system-ui, sans-serif' : '"Newsreader Variable", Georgia, serif',
+    "--body-font": '"Manrope Variable", ui-sans-serif, system-ui, sans-serif',
   } as CSSProperties;
 
   return (
-    <html lang="en" style={style}>
+    <html lang="en" style={style} data-scroll-behavior="smooth">
       <body data-theme={tenant.theme}>
         <a className="skip-link" href="#main-content">Skip to main content</a>
         <SiteHeader tenant={tenant} />

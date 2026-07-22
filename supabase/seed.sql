@@ -1,6 +1,6 @@
 insert into public.tenants (id, slug, company_name, legal_business_name, phone, email, physical_address, business_hours, service_area, insurance_information, primary_cta)
 values
-  ('summit', 'summit', 'Summit Painting Co.', 'Summit Painting Co. (demonstration)', '(801) 555-0142', 'estimates@summitpainting.example', 'Demonstration address, Provo, UT', 'Monday-Friday, 8:00 AM-5:00 PM', 'Utah County, Utah', 'Requires verification', 'Plan your project'),
+  ('summit', 'summit', 'Summit Painting Co.', 'Summit Painting Co. (demonstration)', '(801) 555-0142', 'estimates@summitpainting.example', 'Demonstration address, Salt Lake City, UT', 'Monday-Friday, 8:00 AM-5:00 PM', 'Salt Lake City and Salt Lake County, Utah', 'Requires verification', 'Plan your project'),
   ('heritage', 'heritage', 'Heritage Paint & Finish', 'Heritage Paint & Finish (demonstration)', '(303) 555-0186', 'hello@heritagepaint.example', 'Demonstration address, Lakewood, CO', 'Monday-Saturday, 8:30 AM-5:30 PM', 'Denver west and south metro, Colorado', 'Requires verification', 'Get a friendly estimate')
 on conflict (id) do update set company_name = excluded.company_name;
 

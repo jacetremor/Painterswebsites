@@ -30,6 +30,13 @@ describe("tenant isolation", () => {
     }
   });
 
+  it("centers tenant geography on Salt Lake City and Denver", () => {
+    expect(TENANTS[0]?.locations[0]?.city).toBe("Salt Lake City");
+    expect(TENANTS[0]?.serviceArea).toContain("Salt Lake County");
+    expect(TENANTS[1]?.locations[0]?.city).toBe("Denver");
+    expect(TENANTS[1]?.serviceArea).toContain("Denver");
+  });
+
   it("does not reuse tenant page introductions", () => {
     const summit = new Set(allTenantPages(TENANTS[0]!).map((page) => page.intro.toLowerCase()));
     const heritage = allTenantPages(TENANTS[1]!).map((page) => page.intro.toLowerCase());

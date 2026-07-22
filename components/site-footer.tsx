@@ -7,7 +7,7 @@ export function SiteFooter({ tenant }: { tenant: Tenant }) {
       <div className="container">
         <div className="footer-grid">
           <section>
-            <h2>{tenant.name}</h2>
+            <div className="footer-brand"><span className="brand__mark" aria-hidden="true">{tenant.branding.logoMark}</span><h2>{tenant.name}</h2></div>
             <p>{tenant.serviceArea}</p>
             <p><a href={`tel:${tenant.phone.replace(/\D/g, "")}`}>{tenant.phone}</a><br /><a href={`mailto:${tenant.email}`}>{tenant.email}</a></p>
           </section>
@@ -24,7 +24,6 @@ export function SiteFooter({ tenant }: { tenant: Tenant }) {
               <li><Link href="/gallery">Project gallery</Link></li>
               <li><Link href="/blog">Painting guide</Link></li>
               <li><Link href="/contact">Contact</Link></li>
-              <li><Link href="/dashboard">Tenant dashboard</Link></li>
             </ul>
           </nav>
         </div>

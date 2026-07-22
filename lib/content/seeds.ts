@@ -66,16 +66,16 @@ const summitCorePages: ContentPage[] = [
     "",
     "Home",
     "Home",
-    "Premium residential and commercial painting in Utah County",
-    "Thoughtful preparation, controlled finishes, and clear project communication for homes and commercial spaces across Utah County.",
+    "Residential and commercial painting across Salt Lake County",
+    "Thoughtful preparation, controlled finishes, and clear project communication for homes and commercial spaces across the Salt Lake Valley.",
     [
-      "Summit Painting Co. is a demonstration brand built to show how a premium painting website can present real project evidence without inflated claims.",
-      "Our planning-first approach organizes every scope around surface condition, occupied-space protection, finish selection, and a documented handoff.",
+      "Summit brings a planning-first approach to Salt Lake interiors, exteriors, cabinetry, and commercial spaces.",
+      "Every scope is organized around surface condition, occupied-space protection, finish selection, and a documented handoff.",
     ],
     seo(
-      "Utah County Painting Company | Summit Painting Co.",
-      "Explore residential and commercial painting services, project planning, and estimate options across Utah County.",
-      "Precision painting for Utah County spaces",
+      "Salt Lake City Painting Company | Summit Painting Co.",
+      "Explore residential and commercial painting services, project planning, and estimate options across Salt Lake County.",
+      "Salt Lake painting, finished with precision",
       "/",
     ),
   ),
@@ -93,7 +93,7 @@ const summitCorePages: ContentPage[] = [
     ],
     seo(
       "About Our Painting Process | Summit Painting Co.",
-      "Learn how Summit Painting Co. plans preparation, communication, application, and project walkthroughs in Utah County.",
+      "Learn how Summit Painting Co. plans preparation, communication, application, and project walkthroughs in Salt Lake County.",
       "A measured approach to better paint work",
       "/about",
     ),
@@ -103,7 +103,7 @@ const summitCorePages: ContentPage[] = [
     "contact",
     "Contact Summit Painting Co.",
     "Contact",
-    "Painting estimate requests in Utah County",
+    "Painting estimate requests across Salt Lake County",
     "Tell us what you are painting, where the project is located, and what success looks like for the space.",
     [
       "A useful estimate request includes the surfaces involved, current condition, approximate timing, access considerations, and any products or colors already selected.",
@@ -111,7 +111,7 @@ const summitCorePages: ContentPage[] = [
     ],
     seo(
       "Request a Painting Estimate | Summit Painting Co.",
-      "Share your Utah County residential or commercial painting scope and request a detailed estimate.",
+      "Share your Salt Lake County residential or commercial painting scope and request a detailed estimate.",
       "Plan your painting project",
       "/contact",
     ),
@@ -121,7 +121,7 @@ const summitCorePages: ContentPage[] = [
     "gallery",
     "Painting Project Gallery",
     "Gallery",
-    "Utah County painting project examples",
+    "Salt Lake County painting project examples",
     "Browse demonstration project records structured to show location, surfaces, preparation, finish choices, and accessible before-and-after context.",
     [
       "The Phase One images are visual placeholders, not claims of completed client work. Production tenants replace them with original, permission-cleared photographs.",
@@ -129,7 +129,7 @@ const summitCorePages: ContentPage[] = [
     ],
     seo(
       "Painting Project Gallery | Summit Painting Co.",
-      "See structured interior and exterior painting project examples for Summit Painting Co. in Utah County.",
+      "See structured interior and exterior painting project examples for Summit Painting Co. across Salt Lake County.",
       "Finish details, seen in context",
       "/gallery",
     ),
@@ -147,8 +147,8 @@ const summitCorePages: ContentPage[] = [
       "Product recommendations account for cleanability, exposure, substrate movement, sheen, and the people who use the space.",
     ],
     seo(
-      "Residential Painting in Utah County | Summit",
-      "Plan interior, exterior, cabinet, deck, fence, brick, siding, and stucco painting for your Utah County home.",
+      "Residential Painting in Salt Lake County | Summit",
+      "Plan interior, exterior, cabinet, deck, fence, brick, siding, and stucco painting for your Salt Lake County home.",
       "Residential painting built around the home",
       "/residential-painting",
     ),
@@ -166,8 +166,8 @@ const summitCorePages: ContentPage[] = [
       "Preparation and access requirements are confirmed in writing before scheduling so crews and site stakeholders work from the same plan.",
     ],
     seo(
-      "Commercial Painting in Utah County | Summit",
-      "Explore planned interior and exterior painting for offices, retail, light industrial, and multifamily properties in Utah County.",
+      "Commercial Painting in Salt Lake County | Summit",
+      "Explore planned interior and exterior painting for offices, retail, light industrial, and multifamily properties across Salt Lake County.",
       "Commercial painting aligned with operations",
       "/commercial-painting",
     ),
@@ -189,7 +189,7 @@ const heritageCorePages: ContentPage[] = [
     seo(
       "Denver Metro House Painters | Heritage Paint & Finish",
       "Explore friendly interior, exterior, cabinet, deck, and fence painting options across Denver's west and south metro.",
-      "Fresh color, thoughtfully handled",
+      "Denver homes, beautifully refreshed",
       "/",
     ),
   ),
@@ -302,11 +302,11 @@ function makeServices(tenantId: "summit" | "heritage"): Service[] {
           "practical repairs, durable products, and simple updates throughout the job",
           "patient preparation and a finish that is comfortable to maintain day to day",
         ][index % 3]!;
-    const market = isSummit ? "Utah County" : "Denver metro";
+    const market = isSummit ? "Salt Lake County" : "Denver metro";
     const brand = isSummit ? "Summit Painting Co." : "Heritage Paint & Finish";
     const intro = `${item.name} calls for ${focus}. ${brand} uses a site-specific scope for ${market} properties rather than assuming every surface needs the same system.`;
     const description = isSummit
-      ? `Understand the preparation, coating options, and planning behind ${item.name.toLowerCase()} for Utah County homes and properties.`
+      ? `Understand the preparation, coating options, and planning behind ${item.name.toLowerCase()} for Salt Lake County homes and properties.`
       : `Get straightforward guidance on ${item.name.toLowerCase()}, preparation, products, and scheduling for Denver metro properties.`;
 
     return {
@@ -364,26 +364,26 @@ function makeServices(tenantId: "summit" | "heritage"): Service[] {
 }
 
 const summitPlaces = [
-  ["Provo", "Older central neighborhoods and newer foothill homes create a mix of wood trim, stucco, brick, and high-sun exterior exposures."],
-  ["Orem", "Rambler renovations and busy family homes often benefit from washable interior finishes and carefully sequenced common-area work."],
-  ["Lehi", "Rapidly growing neighborhoods include newer fiber-cement, stucco, and open-plan interiors where builder finishes may need evaluation."],
-  ["American Fork", "Historic details near the city center and newer west-side homes require different repair and coating decisions."],
-  ["Pleasant Grove", "Benches and east-facing slopes bring strong sun, wind, and mixed masonry surfaces into exterior planning."],
-  ["Lindon", "Larger lots and foothill exposure make access, wind, and wood-feature maintenance important parts of the estimate."],
-  ["Vineyard", "Newer townhomes and multifamily properties call for coordinated access, durable interiors, and HOA-aware exterior scopes."],
-  ["Springville", "Established homes, artistic interiors, and south-county temperature swings reward careful color sampling and exterior timing."],
-  ["Spanish Fork", "Growing subdivisions and agricultural-edge properties commonly mix stucco, siding, fencing, and sun-exposed wood."],
-  ["Mapleton", "Custom homes near open foothills often include masonry, stained wood details, and elevated exterior access."],
-  ["Payson", "Mature neighborhoods and newer growth areas present varied siding, deck, fence, and interior refresh needs."],
-  ["Salem", "Lakeside moisture patterns and open exposure can affect drying windows for decks, fences, and exterior coatings."],
-  ["Eagle Mountain", "Wind, dust, intense sun, and newer construction make cleaning and adhesion checks especially important."],
-  ["Saratoga Springs", "Lake exposure, fast-growing neighborhoods, and abundant stucco put weather windows and sealant review on the checklist."],
-  ["Highland", "Custom residential finishes and landscaped properties require detailed protection plans and sample-driven color decisions."],
-  ["Alpine", "Mountain-edge weather and high-detail homes make access planning, wood maintenance, and coating compatibility essential."],
-  ["Cedar Hills", "Slope, sun, and foothill wind influence lift access, masking, and exterior application schedules."],
-  ["Woodland Hills", "Steeper sites and mountain exposure require project-specific access and weather planning before exterior work."],
-  ["Elk Ridge", "Elevation and seasonal temperature swings shape the practical window for siding, stucco, deck, and fence projects."],
-  ["Santaquin", "Orchard-edge dust, sun, and expanding neighborhoods call for thorough washing and realistic exterior scheduling."],
+  ["Salt Lake City", "Historic avenues, brick bungalows, modern infill, and downtown commercial spaces call for sharply different preparation and access plans."],
+  ["Sandy", "Foothill exposure, two-story homes, and strong afternoon sun make access, sealant review, and coating conditions central to exterior planning."],
+  ["Draper", "Newer custom homes, open interiors, and wind along the south valley reward detailed protection, cleanable finishes, and careful weather timing."],
+  ["Murray", "Mid-century neighborhoods and busy commercial corridors create a practical mix of interior refreshes, masonry, siding, and tenant-improvement work."],
+  ["Holladay", "Mature trees, detailed homes, and mountain-edge weather make landscape protection, color sampling, and wood preparation especially important."],
+  ["Cottonwood Heights", "Sloped lots, canyon weather, and high-value interiors require deliberate access plans and tightly controlled work zones."],
+  ["West Jordan", "Growing family neighborhoods benefit from durable interiors, predictable room sequencing, and close evaluation of sun-facing exteriors."],
+  ["South Jordan", "Large newer homes and planned communities often pair open-plan interiors with HOA-aware exterior color and finish decisions."],
+  ["Millcreek", "Older brick homes, remodeled interiors, and foothill exposure call for surface-specific repair work and careful color transitions."],
+  ["Taylorsville", "Ranches and split-level homes commonly combine interior updates with trim, siding, fence, deck, or garage-floor projects."],
+  ["West Valley City", "A broad mix of home ages, multifamily properties, and light commercial spaces benefits from flexible, clearly phased scopes."],
+  ["Riverton", "Fast-growing neighborhoods and busy households make room access, durable finishes, and exterior adhesion checks practical priorities."],
+  ["Herriman", "High-plains wind, intense sun, and newer stucco homes put cleaning, crack review, and realistic application windows on the checklist."],
+  ["Midvale", "Compact neighborhoods and commercial centers often need efficient staging, coordinated access, and well-matched repair work."],
+  ["Bluffdale", "Open exposure, new construction, and larger properties make dust control, exterior cleaning, and equipment access important planning details."],
+  ["South Salt Lake", "Small homes, creative commercial spaces, and active streets reward compact work zones and clearly managed daily closeout."],
+  ["Kearns", "Established neighborhoods and strong western sun make siding condition, trim repairs, and washable interior finishes common priorities."],
+  ["Magna", "Older homes and open valley exposure call for thorough washing, practical repair plans, and coating systems suited to heat and wind."],
+  ["Bountiful", "Benches, mature homes, and varied elevations make exterior access, wood details, and weather windows central to the scope."],
+  ["North Salt Lake", "Hillside homes, lake winds, and newer developments require careful masking, access planning, and application-condition checks."],
 ] as const;
 
 const heritagePlaces = [
@@ -585,7 +585,7 @@ function makePosts(tenantId: "summit" | "heritage"): BlogPost[] {
       author: { name: isSummit ? "Summit editorial team" : "Heritage home guide", role: "Demonstration author" },
       publishedAt: "2026-07-01",
       relatedServiceSlug: serviceSlug,
-      relatedLocationSlug: tenantId === "summit" ? "painters-provo-ut" : "painters-denver-co",
+      relatedLocationSlug: tenantId === "summit" ? "painters-salt-lake-city-ut" : "painters-denver-co",
       relatedProjectSlug: makeProjects(tenantId)[index]!.slug,
       featuredImage,
     };
@@ -622,9 +622,9 @@ export const TENANTS: Tenant[] = [
     },
     phone: "(801) 555-0142",
     email: "estimates@summitpainting.example",
-    address: "Demonstration address, Provo, UT",
+    address: "Demonstration address, Salt Lake City, UT",
     businessHours: "Monday-Friday, 8:00 AM-5:00 PM",
-    serviceArea: "Utah County, Utah",
+    serviceArea: "Salt Lake City and Salt Lake County, Utah",
     insuranceInfo: "Insurance status requires tenant verification",
     socialLinks: [],
     reviewLinks: [],
