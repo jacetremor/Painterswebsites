@@ -23,6 +23,8 @@ test("navigates tenant pages without a reload loop", async ({ page }) => {
   await expect(page.locator("body")).toHaveClass(/motion-enabled/);
   const aboutLink = page.locator('.home-intro a[href="/about"]');
   await expect(aboutLink).toHaveCount(1);
+  await aboutLink.scrollIntoViewIfNeeded();
+  await expect(page.locator(".home-intro .motion-reveal")).toHaveCSS("opacity", "1");
   await aboutLink.click();
   await expect(page).toHaveURL(/\/about$/);
   await expect(page.locator("h1")).toContainText("measured approach");

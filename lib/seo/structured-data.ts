@@ -32,6 +32,7 @@ export function pageSchema(tenant: Tenant, page: ContentPage): JsonLd[] {
       isPartOf: { "@id": `${canonicalUrl(tenant, "/")}#website` },
       about: { "@id": `${canonicalUrl(tenant, "/")}#business` },
       dateModified: page.updatedAt,
+      primaryImageOfPage: { "@type": "ImageObject", contentUrl: page.heroImage?.src ?? tenant.heroImage.src },
     },
   ];
 

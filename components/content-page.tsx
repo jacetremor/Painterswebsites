@@ -11,7 +11,8 @@ import { pageSchema } from "@/lib/seo/structured-data";
 import type { ContentPage, Location, Service, Tenant } from "@/lib/types";
 
 function PageHero({ tenant, page }: { tenant: Tenant; page: ContentPage }) {
-  return <header className="page-hero"><Image src={tenant.heroImage.src} alt="" fill priority sizes="100vw" /><div className="container page-hero__content"><Breadcrumbs current={page.breadcrumbLabel} /><p className="eyebrow">{page.intent}</p><SplitText text={page.seo.h1} tag="h1" delay={tenant.theme === "summit" ? 0.045 : 0.07} /><p className="lede">{page.intro}</p></div></header>;
+  const heroImage = page.heroImage ?? tenant.heroImage;
+  return <header className="page-hero"><Image src={heroImage.src} alt={heroImage.alt} fill loading="eager" fetchPriority="high" sizes="100vw" /><div className="container page-hero__content"><Breadcrumbs current={page.breadcrumbLabel} /><p className="eyebrow">{page.intent}</p><SplitText text={page.seo.h1} tag="h1" delay={tenant.theme === "summit" ? 0.045 : 0.07} /><p className="lede">{page.intro}</p></div></header>;
 }
 
 function Faq({ items }: { items: Array<{ question: string; answer: string }> }) {

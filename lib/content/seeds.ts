@@ -1,10 +1,10 @@
-import { PROJECT_PHOTOS, SERVICE_CATALOG } from "@/lib/content/catalog";
+import { SERVICE_CATALOG } from "@/lib/content/catalog";
+import { contentImage, SERVICE_IMAGE_KEYS, type ContentImageKey } from "@/lib/content/images";
 import type {
   BlogPost,
   ContentPage,
   Location,
   Project,
-  ProjectImage,
   SeoFields,
   Service,
   Tenant,
@@ -12,6 +12,15 @@ import type {
 } from "@/lib/types";
 
 const UPDATED_AT = "2026-07-20T12:00:00.000Z";
+
+function coreImageKey(tenantId: string, slug: string): ContentImageKey {
+  if (!slug) return tenantId === "summit" ? "summit-home" : "heritage-home";
+  if (slug === "about") return "about";
+  if (slug === "contact") return "contact";
+  if (slug === "gallery") return "gallery";
+  if (slug === "commercial-painting") return "commercial";
+  return "residential";
+}
 
 function seo(
   title: string,
@@ -57,6 +66,7 @@ function page(
     status: "published",
     updatedAt: UPDATED_AT,
     seo: seoFields,
+    heroImage: contentImage(coreImageKey(tenantId, slug), `${tenantId}-${slug || "home"}-hero`),
   };
 }
 
@@ -124,7 +134,7 @@ const summitCorePages: ContentPage[] = [
     "Salt Lake County painting project examples",
     "Browse demonstration project records structured to show location, surfaces, preparation, finish choices, and accessible before-and-after context.",
     [
-      "The Phase One images are visual placeholders, not claims of completed client work. Production tenants replace them with original, permission-cleared photographs.",
+      "These subject-matched reference photographs illustrate the type of work being discussed without claiming completed client work. Production tenants replace them with original, permission-cleared project photographs.",
       "Every published project should connect to the service performed and the location served so visitors can follow the evidence behind the work.",
     ],
     seo(
@@ -238,7 +248,7 @@ const heritageCorePages: ContentPage[] = [
     "Residential painting ideas and project records",
     "See how a useful project gallery can explain the room, surface, color direction, preparation, and finish instead of showing disconnected photos.",
     [
-      "These Phase One photographs are clearly marked placeholders and do not represent claimed customer projects.",
+      "These subject-matched reference photographs illustrate each project type and do not represent claimed customer work.",
       "A production gallery should use original photos with homeowner permission, accurate locations, descriptive captions, and links to the work performed.",
     ],
     seo(
@@ -332,6 +342,7 @@ function makeServices(tenantId: "summit" | "heritage"): Service[] {
       status: "published",
       updatedAt: UPDATED_AT,
       seo: seo(`${item.name} in ${market} | ${brand}`, description, `${item.name}, planned for the surface`, `/${item.slug}`),
+      heroImage: contentImage(SERVICE_IMAGE_KEYS[item.slug]!, `${tenantId}-${item.slug}-hero`),
       useCases: [...item.useCases],
       benefits: isSummit
         ? ["A finish system matched to the substrate", "Defined protection and sequencing", "A documented final review"]
@@ -456,6 +467,12 @@ function makeLocations(tenantId: "summit" | "heritage"): Location[] {
         isSummit ? `Painting services planned for ${city}` : `A helpful painting plan for your ${city} property`,
         `/${slug}`,
       ),
+      heroImage: contentImage(
+        index === 0
+          ? isSummit ? "summit-location" : "heritage-location"
+          : isSummit ? "summit-neighborhood" : "heritage-neighborhood",
+        `${tenantId}-${citySlug}-hero`,
+      ),
       city,
       state,
       stateAbbr,
@@ -476,32 +493,32 @@ function makeLocations(tenantId: "summit" | "heritage"): Location[] {
   });
 }
 
-function image(tenantId: "summit" | "heritage", projectIndex: number, stage: "before" | "after"): ProjectImage {
-  const photos = PROJECT_PHOTOS[tenantId];
-  const src = photos[(projectIndex + (stage === "after" ? 1 : 0)) % photos.length]!;
-  return {
-    id: `${tenantId}-project-${projectIndex}-${stage}`,
-    src,
-    alt: `Demonstration ${stage} image placeholder for painting project layout`,
-    caption: `Demonstration ${stage} image. Replace with an original, permission-cleared project photo before publishing.`,
-    width: 1600,
-    height: 1067,
-    stage,
-  };
-}
-
 function makeProjects(tenantId: "summit" | "heritage"): Project[] {
   const isSummit = tenantId === "summit";
   const locationSlugs = (isSummit ? summitPlaces : heritagePlaces).slice(0, 6).map(([city]) => {
     const state = isSummit ? "ut" : "co";
     return `painters-${city.toLowerCase().replaceAll(" ", "-")}-${state}`;
   });
-  const titles = isSummit
-    ? ["Foothill Stucco Color Study", "Open-Plan Interior Finish Study", "Cabinet Enamel Sample Project", "Brick and Trim Exterior Study", "Commercial Entry Refresh Study", "Weathered Deck Finish Study"]
-    : ["Sunny Kitchen Cabinet Color Study", "Brick Bungalow Room Refresh", "Front Porch and Rail Study", "Family Room Washable Finish Study", "Neighborhood Shop Interior Study", "Backyard Fence Stain Study"];
-  return titles.map((title, index) => {
+  const definitions: ReadonlyArray<readonly [string, string, ContentImageKey, ContentImageKey]> = isSummit
+    ? [
+        ["Foothill Stucco Color Study", "stucco-painting", "stucco-before", "stucco"],
+        ["Open-Plan Interior Finish Study", "interior-painting", "gallery", "interior-finish"],
+        ["Cabinet Enamel Sample Project", "cabinet-painting-refinishing", "cabinets-detail", "cabinets"],
+        ["Brick and Trim Exterior Study", "brick-painting-staining", "brick", "brick-finish"],
+        ["Commercial Entry Refresh Study", "exterior-painting", "commercial", "exterior"],
+        ["Weathered Deck Finish Study", "deck-painting-staining", "deck-detail", "deck"],
+      ]
+    : [
+        ["Sunny Kitchen Cabinet Color Study", "cabinet-painting-refinishing", "cabinets-detail", "cabinets"],
+        ["Brick Bungalow Room Refresh", "interior-painting", "gallery", "interior-finish"],
+        ["Front Porch and Rail Study", "deck-painting-staining", "deck-detail", "deck"],
+        ["Family Room Washable Finish Study", "interior-painting", "interior", "interior-finish"],
+        ["Neighborhood Shop Interior Study", "interior-painting", "commercial", "paint-detail"],
+        ["Backyard Fence Stain Study", "fence-painting-staining", "fence-before", "fence"],
+      ];
+  return definitions.map(([title, serviceSlug, beforeKey, afterKey], index) => {
     const slug = title.toLowerCase().replaceAll(" ", "-");
-    const service = SERVICE_CATALOG[(index * 2) % SERVICE_CATALOG.length]!;
+    const service = SERVICE_CATALOG.find((item) => item.slug === serviceSlug)!;
     const locationSlug = locationSlugs[index]!;
     const description = isSummit
       ? `Demonstration project record showing how Summit would document scope, preparation, coating decisions, and closeout for a ${service.name.toLowerCase()} project.`
@@ -515,7 +532,7 @@ function makeProjects(tenantId: "summit" | "heritage"): Project[] {
       slug,
       intent: `${service.name} project evidence`,
       intro: description,
-      body: [description, "This record is a layout example, not a claim of customer work. Replace all facts and images with verified first-party evidence before production."],
+      body: [description, "This record uses subject-matched reference photography and is not a claim of customer work. Replace it with verified first-party project evidence before production."],
       cta: "Discuss a similar scope",
       breadcrumbLabel: title,
       status: "published",
@@ -527,7 +544,11 @@ function makeProjects(tenantId: "summit" | "heritage"): Project[] {
       completedAt: "2026-06-01",
       products: [...service.materials],
       featured: index < 3,
-      images: [image(tenantId, index, "before"), image(tenantId, index, "after")],
+      heroImage: contentImage(afterKey, `${tenantId}-project-${index}-hero`),
+      images: [
+        contentImage(beforeKey, `${tenantId}-project-${index}-before`, "before"),
+        contentImage(afterKey, `${tenantId}-project-${index}-after`, "after"),
+      ],
     };
   });
 }
@@ -559,7 +580,7 @@ function makePosts(tenantId: "summit" | "heritage"): BlogPost[] {
       ];
   return definitions.map(([title, excerpt, serviceSlug], index) => {
     const slug = title.toLowerCase().replaceAll(" ", "-");
-    const featuredImage = image(tenantId, index + 2, "after");
+    const featuredImage = contentImage(SERVICE_IMAGE_KEYS[serviceSlug]!, `${tenantId}-post-${index}`, "standalone");
     return {
       id: `${tenantId}-post-${index}`,
       tenantId,
@@ -588,6 +609,7 @@ function makePosts(tenantId: "summit" | "heritage"): BlogPost[] {
       relatedLocationSlug: tenantId === "summit" ? "painters-salt-lake-city-ut" : "painters-denver-co",
       relatedProjectSlug: makeProjects(tenantId)[index]!.slug,
       featuredImage,
+      heroImage: featuredImage,
     };
   });
 }
@@ -629,7 +651,7 @@ export const TENANTS: Tenant[] = [
     socialLinks: [],
     reviewLinks: [],
     primaryCta: "Plan your project",
-    heroImage: image("summit", 0, "after"),
+    heroImage: contentImage("summit-home", "summit-home-hero"),
     pages: summitCorePages,
     services: makeServices("summit"),
     locations: makeLocations("summit"),
@@ -673,7 +695,7 @@ export const TENANTS: Tenant[] = [
     socialLinks: [],
     reviewLinks: [],
     primaryCta: "Get a friendly estimate",
-    heroImage: image("heritage", 0, "before"),
+    heroImage: contentImage("heritage-home", "heritage-home-hero"),
     pages: heritageCorePages,
     services: makeServices("heritage"),
     locations: makeLocations("heritage"),

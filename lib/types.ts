@@ -28,6 +28,7 @@ export type ContentPage = {
   status: PublishStatus;
   updatedAt: string;
   seo: SeoFields;
+  heroImage?: ProjectImage;
 };
 
 export type Service = ContentPage & {

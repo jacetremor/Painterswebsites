@@ -11,7 +11,7 @@ type MetadataOptions = {
 export function buildMetadata({ host, tenant, page }: MetadataOptions): Metadata {
   const canonical = canonicalUrl(tenant, page.seo.canonicalPath);
   const noindex = shouldNoIndexHostname(host) || !page.seo.index || page.status !== "published";
-  const image = page.seo.ogImage ?? "/api/og";
+  const image = page.seo.ogImage ?? page.heroImage?.src ?? tenant.heroImage.src;
 
   return {
     metadataBase: new URL(`https://${tenant.primaryDomain}`),
@@ -30,7 +30,7 @@ export function buildMetadata({ host, tenant, page }: MetadataOptions): Metadata
       title: page.seo.ogTitle,
       description: page.seo.ogDescription,
       url: canonical,
-      images: [{ url: image, width: 1200, height: 630, alt: `${tenant.name} social preview` }],
+      images: [{ url: image, width: 1200, height: 630, alt: page.heroImage?.alt ?? `${tenant.name} painting services` }],
     },
     twitter: {
       card: "summary_large_image",
