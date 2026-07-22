@@ -27,7 +27,7 @@ test("navigates tenant pages without a reload loop", async ({ page }) => {
   await expect(page.locator(".home-intro .motion-reveal")).toHaveCSS("opacity", "1");
   await aboutLink.click();
   await expect(page).toHaveURL(/\/about$/);
-  await expect(page.locator("h1")).toContainText("measured approach");
+  await expect(page.locator("h1")).toContainText("About Summit Painting Co.");
   await page.waitForTimeout(750);
   await expect(page).toHaveURL(/\/about$/);
 });

@@ -85,7 +85,7 @@ const summitCorePages: ContentPage[] = [
     seo(
       "Salt Lake City Painting Company | Summit Painting Co.",
       "Explore residential and commercial painting services, project planning, and estimate options across Salt Lake County.",
-      "Salt Lake painting, finished with precision",
+      "Summit Painting Co. | Salt Lake City Painters",
       "/",
     ),
   ),
@@ -104,7 +104,7 @@ const summitCorePages: ContentPage[] = [
     seo(
       "About Our Painting Process | Summit Painting Co.",
       "Learn how Summit Painting Co. plans preparation, communication, application, and project walkthroughs in Salt Lake County.",
-      "A measured approach to better paint work",
+      "About Summit Painting Co.",
       "/about",
     ),
   ),
@@ -122,7 +122,7 @@ const summitCorePages: ContentPage[] = [
     seo(
       "Request a Painting Estimate | Summit Painting Co.",
       "Share your Salt Lake County residential or commercial painting scope and request a detailed estimate.",
-      "Plan your painting project",
+      "Request a Painting Estimate in Salt Lake City",
       "/contact",
     ),
   ),
@@ -140,7 +140,7 @@ const summitCorePages: ContentPage[] = [
     seo(
       "Painting Project Gallery | Summit Painting Co.",
       "See structured interior and exterior painting project examples for Summit Painting Co. across Salt Lake County.",
-      "Finish details, seen in context",
+      "Salt Lake City Painting Project Gallery",
       "/gallery",
     ),
   ),
@@ -159,7 +159,7 @@ const summitCorePages: ContentPage[] = [
     seo(
       "Residential Painting in Salt Lake County | Summit",
       "Plan interior, exterior, cabinet, deck, fence, brick, siding, and stucco painting for your Salt Lake County home.",
-      "Residential painting built around the home",
+      "Residential Painters in Salt Lake City, UT",
       "/residential-painting",
     ),
   ),
@@ -178,7 +178,7 @@ const summitCorePages: ContentPage[] = [
     seo(
       "Commercial Painting in Salt Lake County | Summit",
       "Explore planned interior and exterior painting for offices, retail, light industrial, and multifamily properties across Salt Lake County.",
-      "Commercial painting aligned with operations",
+      "Commercial Painters in Salt Lake City, UT",
       "/commercial-painting",
     ),
   ),
@@ -199,7 +199,7 @@ const heritageCorePages: ContentPage[] = [
     seo(
       "Denver Metro House Painters | Heritage Paint & Finish",
       "Explore friendly interior, exterior, cabinet, deck, and fence painting options across Denver's west and south metro.",
-      "Denver homes, beautifully refreshed",
+      "Heritage Paint & Finish | Denver House Painters",
       "/",
     ),
   ),
@@ -218,7 +218,7 @@ const heritageCorePages: ContentPage[] = [
     seo(
       "Our Painting Values and Process | Heritage Paint & Finish",
       "Meet the process and homeowner-focused values behind Heritage Paint & Finish in the Denver metro area.",
-      "Painting help that feels close to home",
+      "About Heritage Paint & Finish",
       "/about",
     ),
   ),
@@ -236,7 +236,7 @@ const heritageCorePages: ContentPage[] = [
     seo(
       "Get a Home Painting Estimate | Heritage Paint & Finish",
       "Start a clear, low-pressure painting estimate for your Denver metro home, rental, or small commercial property.",
-      "Let’s talk about your space",
+      "Request a Painting Estimate in Denver",
       "/contact",
     ),
   ),
@@ -254,7 +254,7 @@ const heritageCorePages: ContentPage[] = [
     seo(
       "Interior and Exterior Painting Gallery | Heritage",
       "Browse accessible demonstration project records for home interiors, exteriors, cabinets, decks, and fences.",
-      "Ideas for the spaces you live in",
+      "Denver Interior and Exterior Painting Gallery",
       "/gallery",
     ),
   ),
@@ -273,7 +273,7 @@ const heritageCorePages: ContentPage[] = [
     seo(
       "Residential Painting for Denver Metro Homes | Heritage",
       "Explore approachable interior, exterior, cabinet, deck, fence, brick, siding, and stucco painting for Denver metro homes.",
-      "Home painting with your routine in mind",
+      "Residential Painters in Denver, CO",
       "/residential-painting",
     ),
   ),
@@ -292,7 +292,7 @@ const heritageCorePages: ContentPage[] = [
     seo(
       "Commercial Painting for Denver Metro Properties | Heritage",
       "Plan considerate painting for offices, shops, multifamily common areas, and managed properties in the Denver metro.",
-      "A workable painting plan for busy properties",
+      "Commercial Painters in Denver, CO",
       "/commercial-painting",
     ),
   ),
@@ -313,6 +313,8 @@ function makeServices(tenantId: "summit" | "heritage"): Service[] {
           "patient preparation and a finish that is comfortable to maintain day to day",
         ][index % 3]!;
     const market = isSummit ? "Salt Lake County" : "Denver metro";
+    const primaryCity = isSummit ? "Salt Lake City, UT" : "Denver, CO";
+    const shortBrand = isSummit ? "Summit" : "Heritage";
     const brand = isSummit ? "Summit Painting Co." : "Heritage Paint & Finish";
     const intro = `${item.name} calls for ${focus}. ${brand} uses a site-specific scope for ${market} properties rather than assuming every surface needs the same system.`;
     const description = isSummit
@@ -341,7 +343,12 @@ function makeServices(tenantId: "summit" | "heritage"): Service[] {
       breadcrumbLabel: item.name,
       status: "published",
       updatedAt: UPDATED_AT,
-      seo: seo(`${item.name} in ${market} | ${brand}`, description, `${item.name}, planned for the surface`, `/${item.slug}`),
+      seo: seo(
+        `${item.name} in ${primaryCity} | ${shortBrand}`,
+        description,
+        `${item.name} in ${primaryCity}`,
+        `/${item.slug}`,
+      ),
       heroImage: contentImage(SERVICE_IMAGE_KEYS[item.slug]!, `${tenantId}-${item.slug}-hero`),
       useCases: [...item.useCases],
       benefits: isSummit
@@ -447,7 +454,7 @@ function makeLocations(tenantId: "summit" | "heritage"): Location[] {
       name: `Painting Services in ${city}, ${stateAbbr}`,
       navLabel: city,
       slug,
-      intent: `Residential and commercial painters serving ${city}, ${state}`,
+      intent: `Interior, exterior, and commercial painting in ${city}, ${state}`,
       intro,
       body: [
         isSummit
@@ -463,8 +470,8 @@ function makeLocations(tenantId: "summit" | "heritage"): Location[] {
       updatedAt: UPDATED_AT,
       seo: seo(
         `Painters in ${city}, ${stateAbbr} | ${brand}`,
-        `Explore residential and commercial painting planning, available services, and estimate options in ${city}, ${state}.`,
-        isSummit ? `Painting services planned for ${city}` : `A helpful painting plan for your ${city} property`,
+        `Explore interior, exterior, cabinet, and commercial painting services for homes and businesses in ${city}, ${state}.`,
+        `Residential & Commercial Painters in ${city}, ${stateAbbr}`,
         `/${slug}`,
       ),
       heroImage: contentImage(

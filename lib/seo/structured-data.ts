@@ -58,6 +58,15 @@ export function pageSchema(tenant: Tenant, page: ContentPage): JsonLd[] {
       provider: { "@id": `${canonicalUrl(tenant, "/")}#business` },
       areaServed: tenant.serviceArea,
     });
+    graph.push({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: service.faq.map((item) => ({
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: { "@type": "Answer", text: item.answer },
+      })),
+    });
   }
 
   if (page.kind === "location") {
@@ -70,6 +79,24 @@ export function pageSchema(tenant: Tenant, page: ContentPage): JsonLd[] {
         { "@type": "ListItem", position: 2, name: "Locations", item: canonicalUrl(tenant, "/#locations") },
         { "@type": "ListItem", position: 3, name: location.city, item: canonical },
       ],
+    });
+    graph.push({
+      "@context": "https://schema.org",
+      "@type": "Service",
+      name: `Residential and commercial painting in ${location.city}, ${location.stateAbbr}`,
+      description: location.seo.description,
+      url: canonical,
+      provider: { "@id": `${canonicalUrl(tenant, "/")}#business` },
+      areaServed: { "@type": "City", name: `${location.city}, ${location.state}` },
+    });
+    graph.push({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: location.faq.map((item) => ({
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: { "@type": "Answer", text: item.answer },
+      })),
     });
   }
 
@@ -99,7 +126,7 @@ export function pageSchema(tenant: Tenant, page: ContentPage): JsonLd[] {
     });
   }
 
-  if (page.slug !== "") {
+  if (page.slug !== "" && page.kind !== "location") {
     graph.push({
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
