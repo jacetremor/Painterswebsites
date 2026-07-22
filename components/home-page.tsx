@@ -38,7 +38,7 @@ export function HomePage({ tenant, page }: { tenant: Tenant; page: ContentPage }
         </div>
       </section>
 
-      <section className="section home-intro">
+      <section className="section home-intro home-section--quiet">
         <div className="container intro-grid">
           <div><p className="eyebrow">Built around the surface</p><h2>{tenant.theme === "summit" ? "A sharper standard for every room and elevation." : "A calmer way to bring new color home."}</h2></div>
           <div className="prose intro-copy">{page.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}<Link className="text-link" href="/about">See how we approach the work <ArrowRight size={17} aria-hidden="true" /></Link></div>
@@ -51,13 +51,13 @@ export function HomePage({ tenant, page }: { tenant: Tenant; page: ContentPage }
         <div className="container">
           <div className="section-heading"><div><p className="eyebrow">Painting services</p><h2>Preparation and finishes matched to the job.</h2></div><p>From occupied interiors to weather-exposed exteriors, each scope starts with the material, condition, and way the space is used.</p></div>
           <div className="service-feature-grid">
-            {tenant.services.slice(0, 3).map((service, index) => <SpotlightCard className="service-feature" spotlightColor={tenant.theme === "summit" ? "rgba(225, 93, 63, 0.18)" : "rgba(231, 169, 47, 0.2)"} key={service.id}><span className="service-number">0{index + 1}</span><p className="eyebrow">{service.category}</p><h3>{service.name}</h3><p>{service.intro}</p><Link className="text-link" href={`/${service.slug}`}>Explore the service <ArrowRight size={16} aria-hidden="true" /></Link></SpotlightCard>)}
+            {tenant.services.slice(0, 3).map((service, index) => <SpotlightCard className="service-feature" spotlightColor={tenant.theme === "summit" ? "rgba(225, 93, 63, 0.18)" : "rgba(231, 169, 47, 0.2)"} key={service.id}><span className="service-number">0{index + 1}</span><p className="eyebrow">{service.category}</p><h3>{service.name}</h3><p>{service.useCases.slice(0, 2).join(" and ")}.</p><Link className="text-link" href={`/${service.slug}`}>Explore the service <ArrowRight size={16} aria-hidden="true" /></Link></SpotlightCard>)}
           </div>
           <div className="service-directory">{tenant.services.slice(3).map((service) => <Link key={service.id} href={`/${service.slug}`}><span>{service.name}</span><ArrowRight size={16} aria-hidden="true" /></Link>)}</div>
         </div>
       </section>
 
-      <section className="section project-feature">
+      <section className="section project-feature home-section--feature">
         <div className="container feature-grid">
           <div className="feature-media"><BeforeAfter before={before} after={after} title={featuredProject.name} /></div>
           <div className="feature-copy"><p className="eyebrow">Project approach</p><h2>A beautiful finish starts well before the first coat.</h2><p className="lede">{featuredProject.intro}</p><ol className="clean-process"><li><span>01</span><div><strong>Walk and document</strong><p>Review surfaces, repairs, access, protection, and the desired finish.</p></div></li><li><span>02</span><div><strong>Prepare with intention</strong><p>Build the coating system around the substrate and real site conditions.</p></div></li><li><span>03</span><div><strong>Inspect the details</strong><p>Check coverage, edges, cleanup, and closeout together.</p></div></li></ol><Link className="button" href="/gallery">View project gallery <ArrowRight size={18} aria-hidden="true" /></Link></div>
@@ -71,11 +71,11 @@ export function HomePage({ tenant, page }: { tenant: Tenant; page: ContentPage }
         </div>
       </section>
 
-      <section className="section projects-band">
+      <section className="section projects-band home-section--gallery">
         <div className="container"><div className="section-heading"><div><p className="eyebrow">Selected work</p><h2>Look beyond the color.</h2></div><p>Useful project records explain the surface, preparation, finish choices, and constraints behind the photograph.</p></div><div className="grid-3 project-grid">{tenant.projects.slice(0, 3).map((project) => <ProjectCard key={project.id} project={project} />)}</div></div>
       </section>
 
-      <section className="section planning-band">
+      <section className="section planning-band home-section--quiet">
         <div className="container grid-2">
           <div><p className="eyebrow">A straightforward process</p><h2>Know what happens next.</h2><ul className="expectation-list"><li><Check size={18} aria-hidden="true" /><span><strong>Clear scope</strong> Surface condition, repairs, products, protection, and sequence.</span></li><li><Check size={18} aria-hidden="true" /><span><strong>Thoughtful scheduling</strong> Access, weather, drying time, pets, and occupied rooms.</span></li><li><Check size={18} aria-hidden="true" /><span><strong>Documented walkthrough</strong> Finish review, touch-ups, cleanup, and care notes.</span></li></ul></div>
           <div><p className="eyebrow">Common questions</p><div className="faq"><details><summary>How far ahead should I request an estimate?</summary><p>Share your preferred timing early. Availability depends on scope, weather, product requirements, and current scheduling.</p></details><details><summary>Do I need to choose colors first?</summary><p>No. Color and sheen can be confirmed after scope, but selections and samples should be approved before materials are ordered.</p></details><details><summary>What makes an estimate accurate?</summary><p>Surface condition, repairs, access, protection, product system, number of colors, and sequencing all matter more than square footage alone.</p></details></div></div>
