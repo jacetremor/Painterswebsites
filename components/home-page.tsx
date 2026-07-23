@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Brush, Check, ClipboardCheck, Phone, ShieldCheck } from "lucide-react";
-import { BeforeAfter } from "@/components/before-after";
 import { ContactForm } from "@/components/contact-form";
 import { JsonLd } from "@/components/json-ld";
 import { PaintMarquee } from "@/components/motion/paint-marquee";
@@ -13,8 +12,7 @@ import type { ContentPage, Tenant } from "@/lib/types";
 
 export function HomePage({ tenant, page }: { tenant: Tenant; page: ContentPage }) {
   const featuredProject = tenant.projects[0]!;
-  const before = featuredProject.images.find((image) => image.stage === "before")!;
-  const after = featuredProject.images.find((image) => image.stage === "after")!;
+  const featureImage = featuredProject.images.find((image) => image.stage === "after") ?? featuredProject.images[0]!;
   const region = tenant.theme === "summit" ? "Salt Lake City" : "Denver";
 
   return (
@@ -59,14 +57,14 @@ export function HomePage({ tenant, page }: { tenant: Tenant; page: ContentPage }
 
       <section className="section project-feature home-section--feature">
         <div className="container feature-grid">
-          <div className="feature-media"><BeforeAfter before={before} after={after} title={featuredProject.name} /></div>
+          <div className="feature-media"><Image src={featureImage.src} alt={featureImage.alt} fill sizes="(max-width: 980px) 100vw, 55vw" /><span className="feature-media__caption">Finish reference</span></div>
           <div className="feature-copy"><p className="eyebrow">Project approach</p><h2>A beautiful finish starts well before the first coat.</h2><p className="lede">{featuredProject.intro}</p><ol className="clean-process"><li><span>01</span><div><strong>Walk and document</strong><p>Review surfaces, repairs, access, protection, and the desired finish.</p></div></li><li><span>02</span><div><strong>Prepare with intention</strong><p>Build the coating system around the substrate and real site conditions.</p></div></li><li><span>03</span><div><strong>Inspect the details</strong><p>Check coverage, edges, cleanup, and closeout together.</p></div></li></ol><Link className="button" href="/gallery">View project gallery <ArrowRight size={18} aria-hidden="true" /></Link></div>
         </div>
       </section>
 
       <section className="section locations-band" id="locations">
         <div className="container location-grid">
-          <div className="location-intro"><p className="eyebrow">Local service area</p><h2>{region} painting guidance, neighborhood by neighborhood.</h2><p>Local building styles, elevation, sun, weather, and access all shape a responsible painting plan.</p><Link className="button button--ghost" href={`/${tenant.locations[0]!.slug}`}>Explore {region} services</Link></div>
+          <div className="location-intro"><p className="eyebrow">Local service area</p><h2>Painting {region}, thoughtfully planned.</h2><p>Local building styles, elevation, sun, weather, and access all shape a responsible painting plan.</p><Link className="button button--ghost" href={`/${tenant.locations[0]!.slug}`}>Explore {region} services</Link></div>
           <nav className="location-directory" aria-label="Featured service locations">{tenant.locations.slice(0, 10).map((location) => <Link key={location.id} href={`/${location.slug}`}><span>{location.city}</span><small>{location.stateAbbr}</small><ArrowRight size={17} aria-hidden="true" /></Link>)}</nav>
         </div>
       </section>

@@ -49,3 +49,23 @@ test("keeps the mobile layout free of horizontal overflow", async ({ page }) => 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
   expect(overflow).toBe(false);
 });
+
+test("composes singleton commercial evidence without an empty grid slot", async ({ page }) => {
+  await page.goto("/commercial-painting");
+  const grid = page.locator(".overview-project-grid");
+  const card = grid.locator(".card");
+  await expect(grid).toHaveClass(/project-grid--single/);
+  await expect(card).toHaveCount(1);
+  const [gridBox, cardBox] = await Promise.all([grid.boundingBox(), card.boundingBox()]);
+  expect(gridBox).not.toBeNull();
+  expect(cardBox).not.toBeNull();
+  expect(Math.abs(gridBox!.width - cardBox!.width)).toBeLessThan(2);
+});
+
+test("labels reference photography instead of presenting a false comparison", async ({ page }) => {
+  await page.goto("/projects/foothill-stucco-color-study");
+  await expect(page.locator(".comparison")).toHaveCount(0);
+  await expect(page.locator(".reference-pair figure")).toHaveCount(2);
+  await expect(page.locator(".reference-pair")).toContainText("Surface condition reference");
+  await expect(page.locator(".reference-pair")).toContainText("Finish reference");
+});
