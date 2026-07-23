@@ -20,7 +20,7 @@ If a browser or network policy does not resolve `.localhost` subdomains, map bot
 6. Add the project URL and publishable key to `.env.local`.
 7. Add the service-role key only to local server environment and Vercel encrypted environment variables.
 
-The migration creates all relational tables, indexes, RLS helpers and policies, and the `tenant-media` Storage bucket policies. Review generated SQL and policy tests before applying changes to production.
+The migrations create all relational tables, indexes, RLS helpers and policies, the public generated-media bucket, and the private `owner-media` bucket. Review generated SQL and policy tests before applying changes to production.
 
 ## Authentication and users
 
@@ -46,3 +46,26 @@ tenants/heritage/projects/sunny-kitchen/after/painted-cabinets-after.webp
 ```
 
 The database stores dimensions, stage, caption, descriptive filename, sort order, and an explicit alt-text decision. Validate MIME type, decoded image type, size, and ownership server-side before persisting metadata.
+
+### Owner project photos
+
+The tenant dashboard at `/dashboard#projects` contains the post-launch owner workflow:
+
+1. The authenticated owner chooses a database project and photo type.
+2. The browser requests a tenant-scoped signed upload URL.
+3. The original file is uploaded to the private `owner-media` bucket.
+4. The server decodes it with Sharp, normalizes orientation, strips metadata, constrains oversized dimensions, and stores a clean AVIF variant.
+5. The server registers verified dimensions, project assignment, stage, caption, alt text, and draft status in `project_images`.
+6. Draft images are available only through the authenticated dashboard asset route.
+7. Publishing the image makes its metadata eligible for the public site. The public asset route still verifies that both the image and its project are published before issuing a temporary storage URL.
+
+Before owner testing:
+
+1. Apply `202607230003_owner_media_portal.sql` with `supabase db push`.
+2. Create or import the tenant's `pages` and `projects` rows. The project slug must match the public project slug.
+3. Create the owner in Supabase Auth.
+4. Insert that user into `tenant_users` as `tenant_admin`.
+5. Configure `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, and the server-only `SUPABASE_SERVICE_ROLE_KEY`.
+6. Sign in at the tenant hostname's `/login` page.
+
+Published owner photos replace the seeded photos for the matching project. Finished-result photos drive gallery cards and project heroes; media on the featured project can also drive the homepage hero. Unpublished photos never resolve through the public media endpoint.

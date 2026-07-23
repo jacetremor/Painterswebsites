@@ -16,7 +16,7 @@ npm run dev
 
 Open [http://summit.localhost:3000](http://summit.localhost:3000) and [http://heritage.localhost:3000](http://heritage.localhost:3000). `.localhost` subdomains resolve to the local computer in modern browsers.
 
-Nova Suite onboarding administration is at [http://localhost:3000/dashboard/onboarding](http://localhost:3000/dashboard/onboarding). Without Supabase it includes a read-only sample invitation and guided client form. Production invitation creation, autosave, private uploads, approvals, generation, and launch controls require Supabase.
+Nova Suite onboarding administration is at [http://localhost:3000/dashboard/onboarding](http://localhost:3000/dashboard/onboarding). Tenant owners use `/login` and `/dashboard#projects` on their own hostname to upload project photos, manage alt text and captions, keep drafts private, and publish approved media to the homepage, gallery, and project pages. Without Supabase these surfaces show realistic read-only demonstration data.
 
 Without Supabase variables the two public sites and dashboard audit run from immutable demonstration data. The dashboard is read-only and contact requests are validated but not delivered. Production writes require Supabase.
 
@@ -42,6 +42,7 @@ npm run lhci         # Lighthouse budgets
 - Zod write validation and critical SEO publication gates
 - One GitHub repository, one Vercel project, one Supabase project, multiple domains
 - Secure 17-section client onboarding with durable 30-step tenant generation
+- Tenant owner project-photo workflow with private drafts and explicit public publishing
 - Shared `*.novasuite.io` private previews that remain permanently noindex
 
 Read [the architecture decision record](docs/ARCHITECTURE.md), [onboarding architecture](docs/ONBOARDING_ARCHITECTURE.md), [onboarding operations guide](docs/ONBOARDING_OPERATIONS.md), [local and Supabase setup](docs/LOCAL_AND_SUPABASE_SETUP.md), [deployment guide](docs/DEPLOYMENT.md), and [security model](docs/SECURITY.md).

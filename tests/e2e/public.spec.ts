@@ -114,3 +114,22 @@ test("keeps footer navigation readable on both tenant themes", async ({ page }) 
     await expect(page.locator(".site-footer nav h2").first()).toHaveCSS("font-size", "16px");
   }
 });
+
+test("renders the tenant owner photo workflow in demo mode", async ({ page }) => {
+  await page.goto("/dashboard");
+  await expect(page.getByRole("heading", { name: "Your project photo library" })).toBeVisible();
+  await expect(page.locator(".owner-media__notice")).toContainText("Preview mode");
+  expect(await page.locator(".owner-media-thumb").count()).toBeGreaterThan(0);
+  await expect(page.locator('.owner-file-control input[type="file"]')).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Upload private draft" })).toBeDisabled();
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+  expect(overflow).toBe(false);
+});
+
+test("keeps owner uploads closed until Supabase is configured", async ({ request }) => {
+  const response = await request.post("/api/dashboard/media/uploads", {
+    data: { filename: "project.jpg", mimeType: "image/jpeg", byteSize: 1024 },
+  });
+  expect(response.status()).toBe(503);
+  expect(await response.json()).toEqual({ message: "Connect Supabase before uploading project photos." });
+});

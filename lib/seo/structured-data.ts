@@ -3,6 +3,10 @@ import type { BlogPost, ContentPage, Location, Project, Service, Tenant } from "
 
 type JsonLd = Record<string, unknown>;
 
+function mediaUrl(tenant: Tenant, source: string): string {
+  return source.startsWith("/") ? canonicalUrl(tenant, source) : source;
+}
+
 export function businessSchema(tenant: Tenant): JsonLd {
   return {
     "@context": "https://schema.org",
@@ -15,7 +19,7 @@ export function businessSchema(tenant: Tenant): JsonLd {
     email: tenant.email,
     areaServed: tenant.serviceArea,
     openingHours: tenant.businessHours,
-    image: tenant.heroImage.src,
+    image: mediaUrl(tenant, tenant.heroImage.src),
   };
 }
 
@@ -32,7 +36,7 @@ export function pageSchema(tenant: Tenant, page: ContentPage): JsonLd[] {
       isPartOf: { "@id": `${canonicalUrl(tenant, "/")}#website` },
       about: { "@id": `${canonicalUrl(tenant, "/")}#business` },
       dateModified: page.updatedAt,
-      primaryImageOfPage: { "@type": "ImageObject", contentUrl: page.heroImage?.src ?? tenant.heroImage.src },
+      primaryImageOfPage: { "@type": "ImageObject", contentUrl: mediaUrl(tenant, page.heroImage?.src ?? tenant.heroImage.src) },
     },
   ];
 
@@ -105,7 +109,7 @@ export function pageSchema(tenant: Tenant, page: ContentPage): JsonLd[] {
     graph.push({
       "@context": "https://schema.org",
       "@type": "ImageObject",
-      contentUrl: project.images[0]?.src,
+      contentUrl: project.images[0]?.src ? mediaUrl(tenant, project.images[0].src) : undefined,
       caption: project.images[0]?.caption,
       name: project.images[0]?.alt,
     });
@@ -121,7 +125,7 @@ export function pageSchema(tenant: Tenant, page: ContentPage): JsonLd[] {
       datePublished: post.publishedAt,
       dateModified: post.updatedAt,
       author: { "@type": "Organization", name: post.author.name },
-      image: post.featuredImage.src,
+      image: mediaUrl(tenant, post.featuredImage.src),
       mainEntityOfPage: canonical,
     });
   }
