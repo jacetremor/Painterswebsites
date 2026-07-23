@@ -121,6 +121,10 @@ body[data-theme="heritage"] .hero::after { background: linear-gradient(90deg, rg
 .field textarea { min-height: 140px; resize: vertical; }
 .form-status { min-height: 1.5rem; font-weight: 700; }
 .honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.login-actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+.login-actions .button { width: auto; }
+.auth-callback { display: flex; align-items: center; gap: .8rem; min-height: 45vh; }
+.auth-callback p { margin: 0; font-weight: 750; }
 
 .cta-band { background: var(--primary); color: white; }
 .cta-band .eyebrow { color: var(--accent); }

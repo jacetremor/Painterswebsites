@@ -15,5 +15,11 @@ export default defineConfig({
     command: "npm run dev",
     url: "http://summit.localhost:3000",
     reuseExistingServer: !process.env.CI,
+    env: {
+      ...process.env,
+      NEXT_PUBLIC_SUPABASE_URL: "",
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "",
+      SUPABASE_SERVICE_ROLE_KEY: "",
+    },
   },
 });
