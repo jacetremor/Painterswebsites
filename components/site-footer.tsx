@@ -1,7 +1,14 @@
 import Link from "next/link";
+import { LogIn } from "lucide-react";
 import type { Tenant } from "@/lib/types";
 
-export function SiteFooter({ tenant }: { tenant: Tenant }) {
+export function SiteFooter({
+  tenant,
+  showOwnerLogin = false,
+}: {
+  tenant: Tenant;
+  showOwnerLogin?: boolean;
+}) {
   return (
     <footer className="site-footer">
       <div className="container">
@@ -27,7 +34,15 @@ export function SiteFooter({ tenant }: { tenant: Tenant }) {
             </ul>
           </nav>
         </div>
-        <p className="fine-print">© {new Date().getFullYear()} {tenant.legalName}. Demonstration data and images require verification or replacement before production launch.</p>
+        <div className="footer-bottom">
+          <p className="fine-print">© {new Date().getFullYear()} {tenant.legalName}. Demonstration data and images require verification or replacement before production launch.</p>
+          {showOwnerLogin ? (
+            <Link className="owner-login-link" href="/login">
+              Owner login
+              <LogIn aria-hidden="true" size={15} strokeWidth={2} />
+            </Link>
+          ) : null}
+        </div>
       </div>
     </footer>
   );

@@ -115,6 +115,18 @@ test("keeps footer navigation readable on both tenant themes", async ({ page }) 
   }
 });
 
+test("links each tenant homepage to its owner portal", async ({ page }) => {
+  for (const host of ["summit.localhost", "heritage.localhost"]) {
+    await page.goto(`http://${host}:3000/`);
+    const ownerLogin = page.locator(".site-footer .owner-login-link");
+    await expect(ownerLogin).toBeVisible();
+    await expect(ownerLogin).toHaveAttribute("href", "/login");
+
+    await page.goto(`http://${host}:3000/about`);
+    await expect(page.locator(".site-footer .owner-login-link")).toHaveCount(0);
+  }
+});
+
 test("renders the tenant owner photo workflow in demo mode", async ({ page }) => {
   await page.goto("/dashboard");
   await expect(page.getByRole("heading", { name: "Your project photo library" })).toBeVisible();

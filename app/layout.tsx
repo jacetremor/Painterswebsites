@@ -49,7 +49,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <PublicMotion />
         <SiteHeader tenant={tenant} />
         <main id="main-content">{children}</main>
-        <SiteFooter tenant={tenant} />
+        <SiteFooter tenant={tenant} showOwnerLogin={pathname === "/"} />
       </body>
     </html>
   );
