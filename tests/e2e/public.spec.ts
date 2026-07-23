@@ -1,5 +1,41 @@
 import { expect, test } from "@playwright/test";
 
+async function getContrastRatio(page: import("@playwright/test").Page, selector: string) {
+  return page.locator(selector).first().evaluate((element) => {
+    const parseColor = (value: string) => {
+      const channels = value.match(/[\d.]+/g)?.map(Number) ?? [];
+      return [channels[0] ?? 0, channels[1] ?? 0, channels[2] ?? 0] as const;
+    };
+    const luminance = (channels: readonly [number, number, number]) => {
+      const toLinear = (channel: number) => {
+        const value = channel / 255;
+        return value <= .04045 ? value / 12.92 : ((value + .055) / 1.055) ** 2.4;
+      };
+      return .2126 * toLinear(channels[0])
+        + .7152 * toLinear(channels[1])
+        + .0722 * toLinear(channels[2]);
+    };
+
+    const foreground = parseColor(getComputedStyle(element).color);
+    let backgroundElement: Element | null = element;
+    let background: readonly [number, number, number] = [255, 255, 255];
+    while (backgroundElement) {
+      const style = getComputedStyle(backgroundElement);
+      const channels = parseColor(style.backgroundColor);
+      if (channels.length === 3 && style.backgroundColor !== "rgba(0, 0, 0, 0)") {
+        background = channels;
+        break;
+      }
+      backgroundElement = backgroundElement.parentElement;
+    }
+
+    const foregroundLuminance = luminance(foreground);
+    const backgroundLuminance = luminance(background);
+    return (Math.max(foregroundLuminance, backgroundLuminance) + .05)
+      / (Math.min(foregroundLuminance, backgroundLuminance) + .05);
+  });
+}
+
 test("renders one H1 and crawlable tenant navigation", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("h1")).toHaveCount(1);
@@ -68,4 +104,13 @@ test("labels reference photography instead of presenting a false comparison", as
   await expect(page.locator(".reference-pair figure")).toHaveCount(2);
   await expect(page.locator(".reference-pair")).toContainText("Surface condition reference");
   await expect(page.locator(".reference-pair")).toContainText("Finish reference");
+});
+
+test("keeps footer navigation readable on both tenant themes", async ({ page }) => {
+  for (const host of ["summit.localhost", "heritage.localhost"]) {
+    await page.goto(`http://${host}:3000/`);
+    await expect(page.locator(".site-footer .link-list a").first()).toBeVisible();
+    expect(await getContrastRatio(page, ".site-footer .link-list a")).toBeGreaterThanOrEqual(4.5);
+    await expect(page.locator(".site-footer nav h2").first()).toHaveCSS("font-size", "16px");
+  }
 });
