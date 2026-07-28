@@ -10,7 +10,8 @@ type MetadataOptions = {
 
 export function buildMetadata({ host, tenant, page }: MetadataOptions): Metadata {
   const canonical = canonicalUrl(tenant, page.seo.canonicalPath);
-  const noindex = shouldNoIndexHostname(host) || !page.seo.index || page.status !== "published";
+  const launchApproved = tenant.productionReady || process.env.LHCI_ALLOW_INDEXING === "true";
+  const noindex = !launchApproved || shouldNoIndexHostname(host) || !page.seo.index || page.status !== "published";
   const image = page.seo.ogImage ?? page.heroImage?.src ?? tenant.heroImage.src;
 
   return {

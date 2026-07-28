@@ -7,9 +7,10 @@ export const dynamic = "force-dynamic";
 
 export default async function robots(): Promise<MetadataRoute.Robots> {
   const [tenant, requestHeaders] = await Promise.all([getCurrentTenant(), headers()]);
-  const preview = shouldNoIndexHostname(hostnameFromHeaders(requestHeaders));
+  const launchApproved = tenant.productionReady || process.env.LHCI_ALLOW_INDEXING === "true";
+  const blocked = !launchApproved || shouldNoIndexHostname(hostnameFromHeaders(requestHeaders));
   return {
-    rules: preview
+    rules: blocked
       ? [{ userAgent: "*", disallow: "/" }]
       : [{ userAgent: "*", allow: "/", disallow: ["/dashboard", "/login", "/api", "/preview"] }],
     sitemap: canonicalUrl(tenant, "/sitemap.xml"),

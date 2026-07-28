@@ -3,9 +3,7 @@ import Link from "next/link";
 import { ArrowRight, Brush, Check, ClipboardCheck, Phone, ShieldCheck } from "lucide-react";
 import { ContactForm } from "@/components/contact-form";
 import { JsonLd } from "@/components/json-ld";
-import { PaintMarquee } from "@/components/motion/paint-marquee";
 import { SplitText } from "@/components/motion/split-text";
-import { SpotlightCard } from "@/components/motion/spotlight-card";
 import { ProjectCard } from "@/components/project-card";
 import { pageSchema } from "@/lib/seo/structured-data";
 import type { ContentPage, Tenant } from "@/lib/types";
@@ -14,6 +12,9 @@ export function HomePage({ tenant, page }: { tenant: Tenant; page: ContentPage }
   const featuredProject = tenant.projects[0]!;
   const featureImage = featuredProject.images.find((image) => image.stage === "after") ?? featuredProject.images[0]!;
   const region = tenant.theme === "summit" ? "Salt Lake City" : "Denver";
+  const serviceAreaLabel = tenant.theme === "summit"
+    ? "Serving Salt Lake City and Salt Lake County"
+    : "Serving Denver's west and south metro";
 
   return (
     <>
@@ -21,7 +22,7 @@ export function HomePage({ tenant, page }: { tenant: Tenant; page: ContentPage }
       <section className="hero">
         <Image src={tenant.heroImage.src} alt={tenant.heroImage.alt} fill loading="eager" fetchPriority="high" sizes="100vw" />
         <div className="container hero__content">
-          <p className="eyebrow">Painting {region} with purpose</p>
+          <p className="eyebrow hero__eyebrow">{serviceAreaLabel}</p>
           <SplitText text={page.seo.h1} tag="h1" delay={tenant.theme === "summit" ? 0.05 : 0.075} duration={tenant.theme === "summit" ? 1 : 1.2} />
           <p className="hero__lede">{page.intro}</p>
           <div className="button-row">
@@ -30,9 +31,9 @@ export function HomePage({ tenant, page }: { tenant: Tenant; page: ContentPage }
           </div>
         </div>
         <div className="container hero__trust" aria-label="Project commitments">
-          <span><ShieldCheck size={18} aria-hidden="true" /> Protected spaces</span>
-          <span><Brush size={18} aria-hidden="true" /> Surface-specific prep</span>
-          <span><ClipboardCheck size={18} aria-hidden="true" /> Written project plan</span>
+          <span><ShieldCheck size={18} aria-hidden="true" /><small>01</small> Protected spaces</span>
+          <span><Brush size={18} aria-hidden="true" /><small>02</small> Surface-specific prep</span>
+          <span><ClipboardCheck size={18} aria-hidden="true" /><small>03</small> Written project plan</span>
         </div>
       </section>
 
@@ -43,13 +44,25 @@ export function HomePage({ tenant, page }: { tenant: Tenant; page: ContentPage }
         </div>
       </section>
 
-      <PaintMarquee warm={tenant.theme === "heritage"} />
-
       <section className="section band services-band" id="services">
         <div className="container">
           <div className="section-heading"><div><p className="eyebrow">Painting services</p><h2>Preparation and finishes matched to the job.</h2></div><p>From occupied interiors to weather-exposed exteriors, each scope starts with the material, condition, and way the space is used.</p></div>
           <div className="service-feature-grid">
-            {tenant.services.slice(0, 3).map((service, index) => <SpotlightCard className="service-feature" spotlightColor={tenant.theme === "summit" ? "rgba(225, 93, 63, 0.18)" : "rgba(231, 169, 47, 0.2)"} key={service.id}><span className="service-number">0{index + 1}</span><p className="eyebrow">{service.category}</p><h3>{service.name}</h3><p>{service.useCases.slice(0, 2).join(" and ")}.</p><Link className="text-link" href={`/${service.slug}`}>Explore the service <ArrowRight size={16} aria-hidden="true" /></Link></SpotlightCard>)}
+            {tenant.services.slice(0, 3).map((service) => (
+              <article className="service-feature" key={service.id}>
+                {service.heroImage ? (
+                  <Link className="service-feature__media" href={`/${service.slug}`} tabIndex={-1} aria-hidden="true">
+                    <Image src={service.heroImage.src} alt="" fill sizes="(max-width: 760px) 100vw, 33vw" />
+                  </Link>
+                ) : null}
+                <div className="service-feature__body">
+                  <p className="eyebrow">{service.category}</p>
+                  <h3>{service.name}</h3>
+                  <p>{service.useCases.slice(0, 2).join(" and ")}.</p>
+                  <Link className="text-link" href={`/${service.slug}`}>Explore the service <ArrowRight size={16} aria-hidden="true" /></Link>
+                </div>
+              </article>
+            ))}
           </div>
           <div className="service-directory">{tenant.services.slice(3).map((service) => <Link key={service.id} href={`/${service.slug}`}><span>{service.name}</span><ArrowRight size={16} aria-hidden="true" /></Link>)}</div>
         </div>

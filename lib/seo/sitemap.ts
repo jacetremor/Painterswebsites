@@ -4,6 +4,7 @@ import type { ContentPage, Tenant } from "@/lib/types";
 export type SitemapEntry = { url: string; lastModified: Date; changeFrequency: "monthly" | "yearly"; priority: number };
 
 export function buildSitemapEntries(tenant: Tenant, pages: ContentPage[]): SitemapEntry[] {
+  if (!tenant.productionReady && process.env.LHCI_ALLOW_INDEXING !== "true") return [];
   return pages
     .filter((page) => page.tenantId === tenant.id && page.status === "published" && page.seo.index)
     .map((page) => ({

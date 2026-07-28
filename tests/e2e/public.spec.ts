@@ -43,12 +43,13 @@ test("renders one H1 and crawlable tenant navigation", async ({ page }) => {
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
 });
 
-test("loads the public motion system without hiding content", async ({ page }) => {
+test("loads the restrained motion and image-led service system without hiding content", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("body")).toHaveClass(/motion-enabled/);
   await expect(page.locator(".scroll-progress__bar")).toHaveCount(1);
   await expect(page.locator(".split-text")).toHaveCount(1);
-  await expect(page.locator(".paint-marquee")).toHaveCount(1);
+  await expect(page.locator(".paint-marquee")).toHaveCount(0);
+  await expect(page.locator(".service-feature__media img")).toHaveCount(3);
   const introduction = page.locator(".home-intro .motion-reveal");
   await introduction.scrollIntoViewIfNeeded();
   await expect(introduction).toHaveClass(/is-visible/);
@@ -137,11 +138,27 @@ test("offers password and email-link owner sign in", async ({ page }) => {
 
 test("renders the tenant owner photo workflow in demo mode", async ({ page }) => {
   await page.goto("/dashboard");
+  await expect(page.getByRole("heading", { name: "Website status" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Recent website leads" })).not.toBeVisible();
+
+  await page.locator('.dashboard-nav a[href="/dashboard#leads"]').click();
+  await expect(page).toHaveURL(/#leads$/);
+  await expect(page.getByRole("heading", { name: "Recent website leads" })).toBeVisible();
+  await expect(page.locator(".dashboard-empty-state")).toContainText("No estimate requests yet");
+  await expect(page.getByRole("heading", { name: "Website status" })).not.toBeVisible();
+
+  await page.locator('.dashboard-nav a[href="/dashboard#library"]').click();
+  await expect(page).toHaveURL(/#library$/);
   await expect(page.getByRole("heading", { name: "Your project photo library" })).toBeVisible();
   await expect(page.locator(".owner-media__notice")).toContainText("Preview mode");
   expect(await page.locator(".owner-media-thumb").count()).toBeGreaterThan(0);
+
+  await page.locator('.dashboard-nav a[href="/dashboard#upload"]').click();
+  await expect(page).toHaveURL(/#upload$/);
+  await expect(page.getByRole("heading", { name: "Upload project photos" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Your project photo library" })).not.toBeVisible();
   await expect(page.locator('.owner-file-control input[type="file"]')).toBeDisabled();
-  await expect(page.getByRole("button", { name: "Upload private draft" })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Upload as draft" })).toBeDisabled();
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
   expect(overflow).toBe(false);
 });

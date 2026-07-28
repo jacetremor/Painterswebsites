@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { hashContactIp } from "@/lib/contact/ip-hash";
+import { sendContactNotification } from "@/lib/contact/notification";
 import { resolveSeedTenant, normalizeHostname } from "@/lib/tenant/host";
 import { takeRateLimit } from "@/lib/security/rate-limit";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -26,8 +28,33 @@ export async function POST(request: NextRequest) {
   if (!parsed.success) return NextResponse.json({ message: "Please check the required contact details." }, { status: 422 });
 
   const supabase = createSupabaseAdminClient();
-  if (supabase) {
-    const { error } = await supabase.from("contact_submissions").insert({
+  if (!supabase) {
+    return NextResponse.json({ message: "Demonstration mode validated your request; connect Supabase to deliver it." }, { status: 202 });
+  }
+
+  const ipHash = hashContactIp(tenant.id, ip);
+  if (ipHash) {
+    const windowStart = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+    const { count, error: rateError } = await supabase
+      .from("contact_submissions")
+      .select("id", { count: "exact", head: true })
+      .eq("tenant_id", tenant.id)
+      .eq("ip_hash", ipHash)
+      .gte("created_at", windowStart);
+    if (rateError) return NextResponse.json({ message: "The request could not be checked. Please call instead." }, { status: 503 });
+    if ((count ?? 0) >= 5) return NextResponse.json({ message: "Please wait before sending another request." }, { status: 429 });
+  }
+
+  const { data: settings, error: settingsError } = await supabase
+    .from("contact_settings")
+    .select("notification_recipients,store_submissions")
+    .eq("tenant_id", tenant.id)
+    .maybeSingle();
+  if (settingsError) return NextResponse.json({ message: "The request could not be routed. Please call instead." }, { status: 503 });
+
+  const { data: submission, error: submissionError } = await supabase
+    .from("contact_submissions")
+    .insert({
       tenant_id: tenant.id,
       name: parsed.data.name,
       email: parsed.data.email,
@@ -37,9 +64,31 @@ export async function POST(request: NextRequest) {
       message: parsed.data.message,
       source_path: request.nextUrl.pathname,
       status: "new",
-    });
-    if (error) return NextResponse.json({ message: "The request could not be stored. Please call instead." }, { status: 503 });
+      ip_hash: ipHash,
+      notification_status: "pending",
+    })
+    .select("id")
+    .single();
+  if (submissionError || !submission) {
+    return NextResponse.json({ message: "The request could not be stored. Please call instead." }, { status: 503 });
   }
 
-  return NextResponse.json({ message: supabase ? `Thanks. ${tenant.name} received your request.` : "Demonstration mode validated your request; connect Supabase to deliver it." }, { status: 202 });
+  const notification = await sendContactNotification({
+    id: submission.id,
+    tenant,
+    recipients: settings?.notification_recipients ?? [],
+    contact: parsed.data,
+  });
+  await supabase
+    .from("contact_submissions")
+    .update({
+      notification_status: notification.status,
+      notification_provider_id: notification.status === "sent" ? notification.providerId : null,
+      notification_error: notification.status === "sent" ? null : notification.error,
+      notified_at: notification.status === "sent" ? new Date().toISOString() : null,
+    })
+    .eq("id", submission.id)
+    .eq("tenant_id", tenant.id);
+
+  return NextResponse.json({ message: `Thanks. ${tenant.name} received your request.` }, { status: 202 });
 }

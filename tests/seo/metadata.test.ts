@@ -22,6 +22,18 @@ describe("tenant metadata", () => {
     expect(metadata.robots).toMatchObject({ index: false, follow: false });
   });
 
+  it("keeps production hosts noindex until the tenant launch gate is approved", () => {
+    const tenant = TENANTS[0]!;
+    const blocked = buildMetadata({ host: tenant.primaryDomain, tenant, page: tenant.pages[0]! });
+    const approved = buildMetadata({
+      host: tenant.primaryDomain,
+      tenant: { ...tenant, productionReady: true },
+      page: tenant.pages[0]!,
+    });
+    expect(blocked.robots).toMatchObject({ index: false, follow: false });
+    expect(approved.robots).toMatchObject({ index: true, follow: true });
+  });
+
   it("uses service and location search intent in every service H1", () => {
     for (const tenant of TENANTS) {
       const primaryLocation = tenant.theme === "summit" ? "Salt Lake City, UT" : "Denver, CO";
