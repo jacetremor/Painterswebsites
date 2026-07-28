@@ -1,11 +1,4 @@
-"use client";
-
-import { useEffect, useRef, type CSSProperties, type ElementType } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { SplitText as GSAPSplitText } from "gsap/SplitText";
-
-if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger, GSAPSplitText);
+import type { CSSProperties, ElementType } from "react";
 
 type SplitTextProps = {
   text: string;
@@ -13,50 +6,41 @@ type SplitTextProps = {
   className?: string;
   delay?: number;
   duration?: number;
-  start?: string;
   style?: CSSProperties;
 };
 
-// Adapted from React Bits SplitText; source is kept local so timing can follow each tenant theme.
-export function SplitText({ text, tag = "h1", className = "", delay = 0.055, duration = 1.05, start = "top 92%", style }: SplitTextProps) {
-  const ref = useRef<HTMLElement | null>(null);
+type WordStyle = CSSProperties & {
+  "--split-delay": string;
+  "--split-duration": string;
+};
 
-  useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    let split: GSAPSplitText | undefined;
-    let animation: gsap.core.Tween | undefined;
-    let cancelled = false;
-
-    void document.fonts.ready.then(() => {
-      if (cancelled || !ref.current) return;
-      split = new GSAPSplitText(ref.current, { type: "words", wordsClass: "split-word", smartWrap: true });
-      animation = gsap.fromTo(
-        split.words,
-        { yPercent: 115, opacity: 0, rotate: 2 },
-        {
-          yPercent: 0,
-          opacity: 1,
-          rotate: 0,
-          duration,
-          stagger: delay,
-          ease: "power4.out",
-          force3D: true,
-          scrollTrigger: { trigger: ref.current, start, once: true },
-        },
-      );
-    });
-
-    return () => {
-      cancelled = true;
-      animation?.scrollTrigger?.kill();
-      animation?.kill();
-      split?.revert();
-    };
-  }, [delay, duration, start, text]);
-
+export function SplitText({
+  text,
+  tag = "h1",
+  className = "",
+  delay = 0.055,
+  duration = 0.75,
+  style,
+}: SplitTextProps) {
   const Tag = tag as ElementType;
-  return <Tag ref={(node: HTMLElement | null) => { ref.current = node; }} className={`split-text ${className}`} style={style}>{text}</Tag>;
+  const words = text.trim().split(/\s+/);
+
+  return (
+    <Tag className={`split-text ${className}`} style={style}>
+      {words.map((word, index) => (
+        <span key={`${word}-${index}`}>
+          <span
+            className="split-word"
+            style={{
+              "--split-delay": `${Math.min(index * delay, 0.65)}s`,
+              "--split-duration": `${duration}s`,
+            } as WordStyle}
+          >
+            {word}
+          </span>
+          {index < words.length - 1 ? " " : null}
+        </span>
+      ))}
+    </Tag>
+  );
 }

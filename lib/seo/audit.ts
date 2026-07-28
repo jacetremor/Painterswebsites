@@ -3,6 +3,8 @@ import { canonicalUrl } from "@/lib/tenant/host";
 import type { ContentPage, Location, SeoIssue, Tenant } from "@/lib/types";
 
 const PLACEHOLDER_PATTERN = /lorem ipsum|todo|tbd|replace me/i;
+const DEMONSTRATION_PATTERN = /demonstration|sample customer|\.example\b|\(demonstration\)/i;
+const STOCK_IMAGE_PATTERN = /^https:\/\/images\.(pexels|unsplash)\.com\//i;
 
 function normalize(value: string): string {
   return value.toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
@@ -51,6 +53,40 @@ export function auditTenant(tenant: Tenant): SeoIssue[] {
     const key = `${page.kind}:${page.slug}`;
     if (slugSet.has(key)) issues.push({ severity: "critical", code: "duplicate-slug", message: `Duplicate ${page.kind} slug: ${page.slug}`, pageId: page.id });
     slugSet.add(key);
+  }
+  return issues;
+}
+
+export function auditTenantLaunchReadiness(tenant: Tenant): SeoIssue[] {
+  const issues = auditTenant(tenant);
+  if (!tenant.productionReady) {
+    issues.push({ severity: "critical", code: "launch-gate-closed", message: "Production indexing remains disabled until every launch requirement is approved." });
+  }
+  if (DEMONSTRATION_PATTERN.test([tenant.legalName, tenant.email, tenant.address].join(" ")) || /\b555\b/.test(tenant.phone)) {
+    issues.push({ severity: "critical", code: "placeholder-business-data", message: "Replace demonstration contact and legal details before launch." });
+  }
+  if (!tenant.domainVerified) {
+    issues.push({ severity: "critical", code: "primary-domain-unverified", message: "Verify the production domain, HTTPS, and primary-host redirects before launch." });
+  }
+  if (!tenant.insuranceInfo || /requires .*verification/i.test(tenant.insuranceInfo)) {
+    issues.push({ severity: "critical", code: "business-claims-unverified", message: "Verify insurance, licensing, and other trust claims before launch." });
+  }
+  if (tenant.projects.some((project) => DEMONSTRATION_PATTERN.test(`${project.intro} ${project.body.join(" ")}`))) {
+    issues.push({ severity: "critical", code: "project-evidence-unverified", message: "Replace demonstration project records with verified first-party work." });
+  }
+  const publicImages = [
+    tenant.heroImage,
+    ...tenant.services.flatMap((service) => service.heroImage ? [service.heroImage] : []),
+    ...tenant.projects.flatMap((project) => project.images),
+  ];
+  if (publicImages.some((image) => STOCK_IMAGE_PATTERN.test(image.src))) {
+    issues.push({ severity: "critical", code: "first-party-images-required", message: "Replace reference photography with permission-cleared first-party project images." });
+  }
+  if (!tenant.testimonials.some((testimonial) => testimonial.verified)) {
+    issues.push({ severity: "warning", code: "no-verified-testimonials", message: "Add only source-verified customer reviews with publication permission." });
+  }
+  if (tenant.reviewLinks.length === 0) {
+    issues.push({ severity: "warning", code: "missing-review-profile", message: "Add the verified Google Business Profile or approved review profile." });
   }
   return issues;
 }

@@ -26,7 +26,15 @@ function projectLabel(project: OwnerMediaProject) {
   return `${project.title} · ${project.status}`;
 }
 
-export function OwnerMediaManager({ initialState, readOnly }: { initialState: OwnerMediaState; readOnly: boolean }) {
+export function OwnerMediaManager({
+  initialState,
+  readOnly,
+  view,
+}: {
+  initialState: OwnerMediaState;
+  readOnly: boolean;
+  view: "upload" | "library";
+}) {
   const [items, setItems] = useState(initialState.items);
   const [selectedId, setSelectedId] = useState(initialState.items[0]?.id ?? "");
   const [projectFilter, setProjectFilter] = useState("all");
@@ -183,8 +191,8 @@ export function OwnerMediaManager({ initialState, readOnly }: { initialState: Ow
       <header className="owner-media__header">
         <div>
           <p className="eyebrow">Projects &amp; media</p>
-          <h2 id="owner-media-title">Your project photo library</h2>
-          <p>Upload real work, attach it to the right project, and decide exactly when it appears on the public website.</p>
+          <h2 id="owner-media-title">{view === "upload" ? "Upload project photos" : "Your project photo library"}</h2>
+          <p>{view === "upload" ? "Attach real work to the correct project and save it privately for review." : "Review image details and decide exactly when each photo appears on the public website."}</p>
         </div>
         <div className="owner-media__counts" aria-label="Photo status summary">
           <span><strong>{items.length}</strong> total</span>
@@ -206,10 +214,11 @@ export function OwnerMediaManager({ initialState, readOnly }: { initialState: Ow
         </div>
       )}
 
-      <form className="owner-upload" onSubmit={uploadPhoto}>
+      {view === "upload" ? <form className="owner-upload" id="upload" onSubmit={uploadPhoto}>
         <div className="owner-upload__intro">
-          <ImagePlus size={24} aria-hidden="true" />
-          <div><h3>Add a project photo</h3><p>JPG, PNG, WebP, or AVIF. Maximum 10 MB.</p></div>
+          <span className="owner-upload__icon"><ImagePlus size={22} aria-hidden="true" /></span>
+          <div><p className="owner-step">Step 1</p><h3>Add a project photo</h3><p>Choose a project, describe the image, then upload it as a private draft.</p></div>
+          <span className="owner-upload__format">JPG, PNG, WebP or AVIF · 10 MB max</span>
         </div>
         <div className="owner-upload__fields">
           <label>Project<select value={uploadProjectId} onChange={(event) => setUploadProjectId(event.target.value)} disabled={uploadDisabled}>{initialState.projects.map((project) => <option key={project.id} value={project.id}>{projectLabel(project)}</option>)}</select></label>
@@ -225,51 +234,54 @@ export function OwnerMediaManager({ initialState, readOnly }: { initialState: Ow
           </label>
           <button className="button" type="submit" disabled={uploadDisabled || busy !== null || !uploadFile}>
             {busy === "upload" ? <LoaderCircle className="spin" size={18} aria-hidden="true" /> : <UploadCloud size={18} aria-hidden="true" />}
-            Upload private draft
+            Upload as draft
           </button>
         </div>
-      </form>
+      </form> : null}
 
-      <div className="owner-media__toolbar">
-        <label>Project<select value={projectFilter} onChange={(event) => setProjectFilter(event.target.value)}><option value="all">All projects</option>{initialState.projects.map((project) => <option key={project.id} value={project.id}>{project.title}</option>)}</select></label>
-        <div className="segmented-control" aria-label="Filter photos by publishing status">
-          {(["all", "published", "draft"] as const).map((status) => <button key={status} type="button" className={statusFilter === status ? "is-active" : ""} onClick={() => setStatusFilter(status)}>{status === "all" ? "All" : status === "published" ? "Live" : "Drafts"}</button>)}
-        </div>
-      </div>
-
-      <div className="owner-media__workspace">
-        <div className="owner-media__browser" aria-label="Project photos">
-          {visibleItems.map((item) => (
-            <button className={`owner-media-thumb ${selectedId === item.id ? "is-selected" : ""}`} type="button" key={item.id} onClick={() => selectPhoto(item)} aria-pressed={selectedId === item.id}>
-              <span className="owner-media-thumb__image"><Image src={item.src} alt="" fill unoptimized sizes="(max-width: 680px) 50vw, 220px" /></span>
-              <span className="owner-media-thumb__meta"><strong>{item.projectTitle}</strong><small>{item.stage === "after" ? "Finished result" : item.stage === "before" ? "Before work" : "Project detail"}</small></span>
-              <span className={`owner-media-thumb__status ${item.isPublished ? "is-live" : ""}`}>{item.isPublished ? <Eye size={13} aria-hidden="true" /> : <EyeOff size={13} aria-hidden="true" />}{item.isPublished ? "Live" : "Draft"}</span>
-            </button>
-          ))}
-          {!visibleItems.length && <div className="owner-media__empty"><ImagePlus size={28} aria-hidden="true" /><strong>No photos in this view</strong><span>Change the filters or upload the first project photo.</span></div>}
+      {view === "library" ? <div className="owner-media__library" id="library">
+        <div className="owner-media__toolbar">
+          <div><p className="owner-step">Step 2</p><h3>Review your photo library</h3></div>
+          <label>Project<select value={projectFilter} onChange={(event) => setProjectFilter(event.target.value)}><option value="all">All projects</option>{initialState.projects.map((project) => <option key={project.id} value={project.id}>{project.title}</option>)}</select></label>
+          <div className="segmented-control" aria-label="Filter photos by publishing status">
+            {(["all", "published", "draft"] as const).map((status) => <button key={status} type="button" aria-pressed={statusFilter === status} className={statusFilter === status ? "is-active" : ""} onClick={() => setStatusFilter(status)}>{status === "all" ? "All" : status === "published" ? "Live" : "Drafts"}</button>)}
+          </div>
         </div>
 
-        <aside className="owner-media__inspector" aria-label="Selected photo details">
-          {selected ? (
-            <>
-              <div className="owner-media__preview"><Image src={selected.src} alt={selected.altText} fill unoptimized sizes="(max-width: 900px) 100vw, 360px" /></div>
-              <div className="owner-media__inspector-heading"><div><span className={editPublished ? "status-live" : "status-draft"}>{editPublished ? "Published" : "Private draft"}</span><h3>{selected.projectTitle}</h3></div>{editPublished ? <Eye size={20} aria-label="Visible on website" /> : <EyeOff size={20} aria-label="Not visible on website" />}</div>
-              <label>Project<select value={editProjectId} onChange={(event) => setEditProjectId(event.target.value)} disabled={readOnly || busy !== null}>{initialState.projects.map((project) => <option key={project.id} value={project.id}>{projectLabel(project)}</option>)}</select></label>
-              <label>Photo type<select value={editStage} onChange={(event) => setEditStage(event.target.value as Stage)} disabled={readOnly || busy !== null}><option value="after">Finished result</option><option value="before">Before work</option><option value="standalone">Project detail</option></select></label>
-              <label>Alt text<textarea value={editAlt} onChange={(event) => setEditAlt(event.target.value)} minLength={8} maxLength={180} disabled={readOnly || busy !== null} /></label>
-              <label>Caption<textarea value={editCaption} onChange={(event) => setEditCaption(event.target.value)} maxLength={240} disabled={readOnly || busy !== null} /></label>
-              <label className="owner-publish-toggle">
-                <input type="checkbox" checked={editPublished} onChange={(event) => setEditPublished(event.target.checked)} disabled={readOnly || busy !== null} />
-                <span><strong>Show on public website</strong><small>{selectedProject?.status === "published" ? "This photo will appear in the gallery and project page." : "The photo becomes visible when this project is published."}</small></span>
-              </label>
-              <div className="owner-media__inspector-actions">
-                <button className="button" type="button" onClick={() => void savePhoto()} disabled={readOnly || busy !== null}><Save size={17} aria-hidden="true" />{busy === "save" ? "Saving..." : "Save changes"}</button>
-                <button className={`button button--ghost ${deleteArmed ? "is-danger" : ""}`} type="button" onClick={() => void deletePhoto()} disabled={readOnly || busy !== null} title="Delete photo"><Trash2 size={17} aria-hidden="true" />{busy === "delete" ? "Deleting..." : deleteArmed ? "Confirm delete" : "Delete"}</button>
-              </div>
-            </>
-          ) : <div className="owner-media__empty"><ImagePlus size={28} aria-hidden="true" /><strong>Select a photo</strong><span>Photo details and publishing controls appear here.</span></div>}
-        </aside>
-      </div>
+        <div className="owner-media__workspace">
+          <div className="owner-media__browser" aria-label="Project photos">
+            {visibleItems.map((item) => (
+              <button className={`owner-media-thumb ${selectedId === item.id ? "is-selected" : ""}`} type="button" key={item.id} onClick={() => selectPhoto(item)} aria-pressed={selectedId === item.id}>
+                <span className="owner-media-thumb__image"><Image src={item.src} alt="" fill unoptimized sizes="(max-width: 680px) 50vw, 220px" /></span>
+                <span className="owner-media-thumb__meta"><strong>{item.projectTitle}</strong><small>{item.stage === "after" ? "Finished result" : item.stage === "before" ? "Before work" : "Project detail"}</small></span>
+                <span className={`owner-media-thumb__status ${item.isPublished ? "is-live" : ""}`}>{item.isPublished ? <Eye size={13} aria-hidden="true" /> : <EyeOff size={13} aria-hidden="true" />}{item.isPublished ? "Live" : "Draft"}</span>
+              </button>
+            ))}
+            {!visibleItems.length && <div className="owner-media__empty"><ImagePlus size={28} aria-hidden="true" /><strong>No photos in this view</strong><span>Change the filters or upload the first project photo.</span></div>}
+          </div>
+
+          <aside className="owner-media__inspector" aria-label="Selected photo details">
+            {selected ? (
+              <>
+                <div className="owner-media__preview"><Image src={selected.src} alt={selected.altText} fill unoptimized sizes="(max-width: 900px) 100vw, 360px" /></div>
+                <div className="owner-media__inspector-heading"><div><span className={editPublished ? "status-live" : "status-draft"}>{editPublished ? "Published" : "Private draft"}</span><h3>{selected.projectTitle}</h3></div>{editPublished ? <Eye size={20} aria-label="Visible on website" /> : <EyeOff size={20} aria-label="Not visible on website" />}</div>
+                <label>Project<select value={editProjectId} onChange={(event) => setEditProjectId(event.target.value)} disabled={readOnly || busy !== null}>{initialState.projects.map((project) => <option key={project.id} value={project.id}>{projectLabel(project)}</option>)}</select></label>
+                <label>Photo type<select value={editStage} onChange={(event) => setEditStage(event.target.value as Stage)} disabled={readOnly || busy !== null}><option value="after">Finished result</option><option value="before">Before work</option><option value="standalone">Project detail</option></select></label>
+                <label>Alt text<textarea value={editAlt} onChange={(event) => setEditAlt(event.target.value)} minLength={8} maxLength={180} disabled={readOnly || busy !== null} /></label>
+                <label>Caption<textarea value={editCaption} onChange={(event) => setEditCaption(event.target.value)} maxLength={240} disabled={readOnly || busy !== null} /></label>
+                <label className="owner-publish-toggle">
+                  <input type="checkbox" checked={editPublished} onChange={(event) => setEditPublished(event.target.checked)} disabled={readOnly || busy !== null} />
+                  <span><strong>Show on public website</strong><small>{selectedProject?.status === "published" ? "This photo will appear in the gallery and project page." : "The photo becomes visible when this project is published."}</small></span>
+                </label>
+                <div className="owner-media__inspector-actions">
+                  <button className="button" type="button" onClick={() => void savePhoto()} disabled={readOnly || busy !== null}><Save size={17} aria-hidden="true" />{busy === "save" ? "Saving..." : "Save changes"}</button>
+                  <button className={`button button--ghost ${deleteArmed ? "is-danger" : ""}`} type="button" onClick={() => void deletePhoto()} disabled={readOnly || busy !== null} title="Delete photo"><Trash2 size={17} aria-hidden="true" />{busy === "delete" ? "Deleting..." : deleteArmed ? "Confirm delete" : "Delete"}</button>
+                </div>
+              </>
+            ) : <div className="owner-media__empty"><ImagePlus size={28} aria-hidden="true" /><strong>Select a photo</strong><span>Photo details and publishing controls appear here.</span></div>}
+          </aside>
+        </div>
+      </div> : null}
 
       {message && <p className={`owner-media__message is-${messageTone}`} role="status">{messageTone === "success" ? <CheckCircle2 size={18} aria-hidden="true" /> : <AlertCircle size={18} aria-hidden="true" />}{message}</p>}
     </section>

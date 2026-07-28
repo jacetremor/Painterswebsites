@@ -12,7 +12,7 @@ as $$
   );
 $$;
 
-select '1..12';
+select '1..14';
 select pg_temp.tap_ok((select relrowsecurity from pg_class where oid = 'public.pages'::regclass), 1, 'pages has RLS enabled');
 select pg_temp.tap_ok((select relrowsecurity from pg_class where oid = 'public.contact_submissions'::regclass), 2, 'contact submissions has RLS enabled');
 select pg_temp.tap_ok((select relrowsecurity from pg_class where oid = 'public.tenant_users'::regclass), 3, 'tenant memberships have RLS enabled');
@@ -54,5 +54,25 @@ select pg_temp.tap_ok((select relrowsecurity from pg_class where oid = 'public.o
 select pg_temp.tap_ok((select relrowsecurity from pg_class where oid = 'public.onboarding_answers'::regclass), 10, 'onboarding answers have RLS enabled');
 select pg_temp.tap_ok((select relrowsecurity from pg_class where oid = 'public.website_generation_jobs'::regclass), 11, 'generation jobs have RLS enabled');
 select pg_temp.tap_ok((select relrowsecurity from pg_class where oid = 'public.generated_content_versions'::regclass), 12, 'generated drafts have RLS enabled');
+select pg_temp.tap_ok(
+  exists(
+    select 1 from pg_attribute
+    where attrelid = 'public.contact_submissions'::regclass
+      and attname = 'notification_status'
+      and not attisdropped
+  ),
+  13,
+  'contact submissions track notification delivery'
+);
+select pg_temp.tap_ok(
+  exists(
+    select 1 from pg_indexes
+    where schemaname = 'public'
+      and tablename = 'contact_submissions'
+      and indexname = 'contact_submissions_ip_rate_limit'
+  ),
+  14,
+  'contact submissions support durable rate limiting'
+);
 
 rollback;

@@ -22,18 +22,13 @@ export function PublicMotion() {
     const progress = document.querySelector<HTMLElement>(".scroll-progress__bar");
     const hero = document.querySelector<HTMLElement>(".hero, .page-hero");
     const revealTargets = Array.from(document.querySelectorAll<HTMLElement>(REVEAL_SELECTOR));
-    const depthTargets = Array.from(document.querySelectorAll<HTMLElement>(".feature-media, .project-grid .card"));
 
-    body.classList.add("motion-enabled", "route-arriving");
-    let routeFrame = window.requestAnimationFrame(() => {
-      routeFrame = window.requestAnimationFrame(() => body.classList.remove("route-arriving"));
-    });
+    body.classList.add("motion-enabled");
 
     if (reducedMotion) {
       revealTargets.forEach((element) => element.classList.add("is-visible"));
       return () => {
-        window.cancelAnimationFrame(routeFrame);
-        body.classList.remove("motion-enabled", "route-arriving");
+        body.classList.remove("motion-enabled");
       };
     }
 
@@ -65,36 +60,11 @@ export function PublicMotion() {
     updateScrollEffects();
     window.addEventListener("scroll", onScroll, { passive: true });
 
-    const pointerCleanups = depthTargets.map((element) => {
-      const move = (event: globalThis.PointerEvent) => {
-        if (event.pointerType === "touch") return;
-        const rect = element.getBoundingClientRect();
-        const x = (event.clientX - rect.left) / rect.width - 0.5;
-        const y = (event.clientY - rect.top) / rect.height - 0.5;
-        element.style.setProperty("--tilt-x", `${-y * 3.5}deg`);
-        element.style.setProperty("--tilt-y", `${x * 4.5}deg`);
-        element.style.setProperty("--glare-x", `${(x + 0.5) * 100}%`);
-        element.style.setProperty("--glare-y", `${(y + 0.5) * 100}%`);
-      };
-      const leave = () => {
-        element.style.setProperty("--tilt-x", "0deg");
-        element.style.setProperty("--tilt-y", "0deg");
-      };
-      element.addEventListener("pointermove", move);
-      element.addEventListener("pointerleave", leave);
-      return () => {
-        element.removeEventListener("pointermove", move);
-        element.removeEventListener("pointerleave", leave);
-      };
-    });
-
     return () => {
-      window.cancelAnimationFrame(routeFrame);
       if (frame) window.cancelAnimationFrame(frame);
       observer.disconnect();
       window.removeEventListener("scroll", onScroll);
-      pointerCleanups.forEach((cleanup) => cleanup());
-      body.classList.remove("motion-enabled", "route-arriving", "has-scrolled");
+      body.classList.remove("motion-enabled", "has-scrolled");
     };
   }, [pathname]);
 
